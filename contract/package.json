@@ -1,0 +1,23 @@
+{
+  "name": "@berachain/contract",
+  "scripts": {
+    "compile": "./node_modules/.bin/hardhat compile",
+    "deploy:berachain": "./node_modules/.bin/hardhat ignition deploy ./ignition/modules/IrysTheBeraNFT.ts --network berachainTestnet",
+    "verify:berachain": "./node_modules/.bin/hardhat verify --network berachainTestnet ",
+    "test": "./node_modules/.bin/hardhat test",
+    "clean": "rm -rf artifacts; rm -rf cache; rm -rf ignition/deployments; rm -rf node_modules;"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-chai-matchers": "^2.0.6",
+    "@nomicfoundation/hardhat-toolbox-viem": "^3.0.0",
+    "@types/chai": "^4.3.14",
+    "chai": "^4.4.1",
+    "hardhat": "^2.22.2"
+  },
+  "dependencies": {
+    "@nomicfoundation/hardhat-ignition": "^0.15.1",
+    "@openzeppelin/contracts": "^5.0.2",
+    "dotenv": "^16.4.5",
+    "viem": "2.x"
+  }
+}
