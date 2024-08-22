@@ -13,3 +13,7 @@ node_modules
 # solidity-coverage files
 /coverage
 /coverage.json
+
+# misc
+.DS_Store
+*.pem
