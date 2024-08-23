@@ -23,14 +23,13 @@ contract IrysTheBeraNFT is ERC721, ERC721URIStorage, Ownable {
     // state vars
     // ========================================================
     /// @dev 
-    string private _baseURIPrefix = "";
     address private BGT_ADDRESS;
 
     /// @dev to keep track of what the next tokenId to mint
     uint256 private _nextTokenId;
 
-    /// @dev to keep track of the owner's token id
-    mapping(address owner => uint256) public nftOwned;
+    /// @dev to keep track of the owner's token ids
+    mapping(address => uint256[]) public nftOwned;
 
     /// @dev to track if an address has minted a Main NFT
     mapping(address => bool) public hasMintedMainNFT;
@@ -44,8 +43,7 @@ contract IrysTheBeraNFT is ERC721, ERC721URIStorage, Ownable {
     // functions
     // ========================================================
     /// @dev Main constructor that sets the owner to the deployer
-    constructor(string memory baseURIPrefix_, address bgtAddress) ERC721("IrysTheBeraNFT", "IBERA") Ownable(msg.sender) {
-      _baseURIPrefix = baseURIPrefix_;
+    constructor(address bgtAddress) ERC721("IrysTheBeraNFT", "IBERA") Ownable(msg.sender) {
       BGT_ADDRESS = bgtAddress;
     }
 
@@ -62,6 +60,8 @@ contract IrysTheBeraNFT is ERC721, ERC721URIStorage, Ownable {
 
         uint256 balance = ERC20Basic(BGT_ADDRESS).balanceOf(msg.sender);
         addressToBgtAmount[msg.sender] = balance;
+
+        nftOwned[msg.sender].push(tokenId);  // Track the new tokenId
     }
 
     /// @dev Main minting function for the Community NFT that allows each wallet to mint exactly 1 Community NFT
@@ -75,6 +75,8 @@ contract IrysTheBeraNFT is ERC721, ERC721URIStorage, Ownable {
         hasMintedCommunityNFT[msg.sender] = true;
         uint256 balance = ERC20Basic(BGT_ADDRESS).balanceOf(msg.sender);
         addressToBgtAmount[msg.sender] = balance;
+
+        nftOwned[msg.sender].push(tokenId);  // Track the new tokenId
     }   
 
     /// @dev Getter function to retrieve the BGT amount at mint for a specific address
@@ -136,13 +138,17 @@ contract IrysTheBeraNFT is ERC721, ERC721URIStorage, Ownable {
       require(_ownerOf(tokenId) == address(0), "Cannot transfer.");
       address from = super._update(to, tokenId, auth);
       // Added additionally to keep track
-      nftOwned[to] = tokenId;
+      nftOwned[to].push(tokenId);
       return from;
     }
 
     /// @dev Base URI for Irys Mutable References
     function _baseURI() internal view override returns (string memory) {
-        return _baseURIPrefix; // return "https://testnet-gateway.irys.xyz/mutable/";
+        return "https://testnet-gateway.irys.xyz/mutable/";
     }
-    
+
+    /// @dev Function to get all token IDs owned by an address
+    function getTokensOwnedBy(address owner) external view returns (uint256[] memory) {
+        return nftOwned[owner];
+    }
 }

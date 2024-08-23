@@ -13,7 +13,7 @@ async function uploadMetadata(newMetadata: object, rootTx: string) {
     network: "testnet",
     token: "bera",
     key: process.env.PRIVATE_KEY as string,
-    config: { providerUrl: process.env.BERA_RPC as string },
+    config: { providerUrl: process.env.NEXT_PUBLIC_BERA_RPC as string },
   });
   console.log(`Connected to Irys from ${irys.address}`);
 
@@ -27,8 +27,6 @@ async function uploadMetadata(newMetadata: object, rootTx: string) {
   return receipt;
 }
 
- 
-
 export async function POST(req: NextRequest) {
   const { tokenId } = await req.json();
 
@@ -37,12 +35,10 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-
-    
     // Set up public client
     const publicClient = createPublicClient({
       chain: berachainTestnetbArtio,
-      transport: http(process.env.BERA_RPC as string),
+      transport: http(process.env.NEXT_PUBLIC_BERA_RPC as string),
     });
 
     // Retrieve the current owner of the NFT
@@ -60,12 +56,12 @@ export async function POST(req: NextRequest) {
       abi: IrysTheBeraNFTAbi,
       functionName: "getBgtAtMintAmount",
       args: [owner],
-    }) as bigint;;
+    }) as bigint;
     console.log(`baseBGTAmount ${baseBGTAmount.toString()}`);
 
     // Get the current BGT balance
     const currentBGTBalance = await publicClient.readContract({
-      address: process.env.BGT_CONTRACT_ADDRESS as `0x${string}`,
+      address: process.env.NEXT_PUBLIC_BGT_CONTRACT_ADDRESS as `0x${string}`,
       abi: [
         {
           "constant": true,
@@ -102,24 +98,24 @@ export async function POST(req: NextRequest) {
     }
 
     let percentIncreaseRequired;
-    if(currentLevel === 1) {
-      // Calculate the percentage increase needed
-      percentIncreaseRequired = BigInt(parseInt(process.env.PERCENT_TO_LEVEL_2 as string, 10));
-    }
-    else {
-      // Calculate the percentage increase needed
-      percentIncreaseRequired = BigInt(parseInt(process.env.PERCENT_TO_LEVEL_3 as string, 10)); 
+    if (currentLevel === 1) {
+      percentIncreaseRequired = BigInt(parseInt(process.env.NEXT_PUBLIC_PERCENT_TO_LEVEL_2 as string, 10));
+    } else {
+      percentIncreaseRequired = BigInt(parseInt(process.env.NEXT_PUBLIC_PERCENT_TO_LEVEL_3 as string, 10));
     }
     console.log(`percentIncreaseRequired=${percentIncreaseRequired}`);
 
     // Calculate the required BGT balance using bigint arithmetic
-    const requiredBGTBalance = baseBGTAmount + (baseBGTAmount * percentIncreaseRequired) / 100n;
+    const requiredBGTBalance = baseBGTAmount === 0n
+      ? percentIncreaseRequired
+      : baseBGTAmount + (baseBGTAmount * percentIncreaseRequired) / 100n;
     console.log(`requiredBGTBalance=${requiredBGTBalance}`);
 
-    if (BigInt(currentBGTBalance) < requiredBGTBalance) {
-      console.log(`balance too low, not updating`);
-      return NextResponse.json({ status: false, message: "no updates until you earn more bgt, anon" });
-    }
+    // WILLIAM when testing you can comment this out to just let the update happen. 
+    // if (BigInt(currentBGTBalance) < requiredBGTBalance) {
+    //   console.log(`balance too low, not updating`);
+    //   return NextResponse.json({ status: false, message: "no updates until you earn more bgt, anon" });
+    // }
 
     // Generate new metadata
     const nftNames = process.env.NEXT_PUBLIC_NFT_NAMES?.split(",") || [];

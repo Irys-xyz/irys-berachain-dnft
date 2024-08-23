@@ -2,11 +2,6 @@
 	{
 		"inputs": [
 			{
-				"internalType": "string",
-				"name": "baseURIPrefix_",
-				"type": "string"
-			},
-			{
 				"internalType": "address",
 				"name": "bgtAddress",
 				"type": "address"
@@ -490,6 +485,25 @@
 		"inputs": [
 			{
 				"internalType": "address",
+				"name": "owner",
+				"type": "address"
+			}
+		],
+		"name": "getTokensOwnedBy",
+		"outputs": [
+			{
+				"internalType": "uint256[]",
+				"name": "",
+				"type": "uint256[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
 				"name": "",
 				"type": "address"
 			}
@@ -565,8 +579,13 @@
 		"inputs": [
 			{
 				"internalType": "address",
-				"name": "owner",
+				"name": "",
 				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
 			}
 		],
 		"name": "nftOwned",

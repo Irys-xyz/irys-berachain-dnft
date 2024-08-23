@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useWriteContract, useWaitForTransactionReceipt } from "wagmi";
+import { createPublicClient, createWalletClient, custom } from "viem";
+import { berachainTestnetbArtio } from "wagmi/chains";
 import Spinner from "@/app/components/Spinner";
 import IrysTheBeraNFTAbi from "@/app/contract/IrysTheBeraNFT-abi.json";
 
@@ -14,46 +15,67 @@ const NftMinter: React.FC<NftMinterProps> = ({ mintFunctionName, manifestId }) =
   const [txHash, setTxHash] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const [receipt, setReceipt] = useState<any>(null);
 
   const nftNames = process.env.NEXT_PUBLIC_NFT_NAMES?.split(",") || [];
   const previewImageUrl = `${process.env.NEXT_PUBLIC_IRYS_GATEWAY}/${manifestId}/${nftNames[0]}`;
 
-  const { writeContract, isPending, error: writeError } = useWriteContract();
-
-  const { isLoading: isConfirming, isSuccess: isConfirmed } = useWaitForTransactionReceipt({
-    hash: txHash as `0x${string}`,
-  });
-
   const handleMint = async () => {
     setLoading(true);
+    setError(null);
+
     try {
-      const tx = await writeContract({
+      // Create the wallet client using the injected provider (e.g., MetaMask)
+      const walletClient = createWalletClient({
+        chain: berachainTestnetbArtio,
+        transport: custom(window.ethereum!),  // Use the injected provider
+      });
+
+      // Request the user's account
+      const [address] = await walletClient.getAddresses();
+
+      // Send the transaction to mint the NFT
+      const txHash = await walletClient.writeContract({
         address: process.env.NEXT_PUBLIC_IRYS_THE_BERA_NFT as `0x${string}`,
         abi: IrysTheBeraNFTAbi,
         functionName: mintFunctionName,
+        account: address,  // Use the connected wallet's address
       });
-      // @ts-ignore
-      if (tx && tx.hash) {
-        // @ts-ignore
-        setTxHash(tx.hash);
-        setError(null);
+      console.log("Transaction hash:", txHash);
+      setTxHash(txHash);
 
-        // Extract tokenId from the transaction receipt
-        const tokenId = extractTokenIdFromReceipt("");
-        console.log("calling api route with tokenId=",tokenId);
-        // Call the API route to set initial metadata
-        const response = await fetch("/api/setInitialMetadata", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ tokenId }),
-        });
+      // Create the public client to wait for the transaction receipt
+      const publicClient = createPublicClient({
+        chain: berachainTestnetbArtio,
+        transport: custom(window.ethereum!),  
+      });
+      console.log("Waiting for receipt");
 
-        const result = await response.json();
-        if (result.error) {
-          setError(result.error);
-        }
+      const receipt = await publicClient.waitForTransactionReceipt({
+        hash: txHash,
+        pollingInterval: 1000, // Poll every second
+        timeout: 60_000, // Timeout after 60 seconds
+      });
+
+      setReceipt(receipt);
+
+      console.log("Transaction receipt:", receipt);
+
+      const tokenId = extractTokenIdFromReceipt(receipt);
+      console.log("Token ID:", tokenId);
+
+      // Call the API route to set initial metadata
+      const response = await fetch("/api/setInitialMetadata", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ tokenId }),
+      });
+
+      const result = await response.json();
+      if (result.error) {
+        setError(result.error);
       }
     } catch (err) {
       setError("Minting failed. Please try again.");
@@ -62,33 +84,41 @@ const NftMinter: React.FC<NftMinterProps> = ({ mintFunctionName, manifestId }) =
     }
   };
 
-  const extractTokenIdFromReceipt = (tx: any): number => {
-    // Implement logic to extract tokenId from the transaction receipt
-    // This is just a placeholder; you'll need to replace this with the actual extraction logic
-    return 0;
+  const extractTokenIdFromReceipt = (receipt: any): number => {
+    if (!receipt.logs || receipt.logs.length < 2) {
+      throw new Error("No logs found in the transaction receipt.");
+    }
+  
+    // Assuming the tokenId is in logs[1].data
+    const data = receipt.logs[1].data;
+  
+    // Convert the hex string to a BigInt and then to a number
+    const tokenId = Number(BigInt(data));
+  
+    console.log("Extracted tokenId:", tokenId);
+    
+    return tokenId;
   };
-
+  
   return (
-    <div className="flex flex-col items-center bg-slate-400 p-5 rounded-2xl">
+    <div className="flex flex-col justify-center items-center bg-slate-400 p-5 rounded-2xl">
       <img src={previewImageUrl} alt="NFT Preview" className="rounded-lg shadow-md mb-4" />
       <button
-        className={`btn ${isPending || isConfirming ? "loading" : ""} bg-yellow-500 w-full rounded-xl`}
+        className={`btn ${loading ? "loading" : ""} bg-yellow-500 w-full rounded-xl text-center`}
         onClick={handleMint}
-        disabled={isPending || isConfirming || loading}
+        disabled={loading}
       >
-        {loading ? <Spinner color="text-white" /> : isPending || isConfirming ? "Minting..." : "Mint"}
+        {loading ? <Spinner color="text-white" /> : "Mint"}
       </button>
-      {writeError && <p className="text-red-500 mt-2">{writeError.message}</p>}
       {error && <p className="text-red-500 mt-2">{error}</p>}
-      {isConfirmed && !error && (
+      {txHash && !error && (
         <p className="text-green-500 mt-2">
           Minting successful!{" "}
-          <a href={`${process.env.NEXT_PUBLIC_EXPLORER}/tx/${txHash}`} target="_blank" rel="noopener noreferrer">
+          <a href={`${process.env.NEXT_PUBLIC_EXPLORER}/tx/${txHash}`} target="_blank" rel="noopener noreferrer" className="underline">
             View Transaction
           </a>
         </p>
       )}
-      {isConfirming && <p className="text-yellow-500 mt-2">Waiting for confirmation...</p>}
     </div>
   );
 };

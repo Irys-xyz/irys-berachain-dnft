@@ -78,7 +78,7 @@ const NftViewer: React.FC<NftViewerProps> = ({ tokenId }) => {
   };
 
   return (
-    <div className="flex flex-col items-center bg-slate-400 p-5 rounded-2xl">
+    <div className="flex flex-col items-center bg-slate-400 rounded-2xl">
       {loading ? (
         <Spinner color="text-white" />
       ) : error ? (

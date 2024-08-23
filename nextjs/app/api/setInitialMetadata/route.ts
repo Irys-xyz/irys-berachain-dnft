@@ -19,14 +19,14 @@ export async function POST(req: NextRequest) {
       network: "testnet",
       token: "bera",
       key: process.env.PRIVATE_KEY as string,
-      config: { providerUrl: process.env.BERA_RPC as string },
+      config: { providerUrl: process.env.NEXT_PUBLIC_BERA_RPC as string },
     });
     console.log(`Connected to Irys from ${irys.address}`);
 
     // Check if the token is new by calling tokenURI
     const publicClient = createPublicClient({
       chain: berachainTestnetbArtio,
-      transport: http(process.env.BERA_RPC as string),
+      transport: http(process.env.NEXT_PUBLIC_BERA_RPC as string),
     });
 
     const existingURI = await publicClient.readContract({
@@ -61,7 +61,7 @@ export async function POST(req: NextRequest) {
     // Update the tokenURI on the contract
     const walletClient = createWalletClient({
       chain: berachainTestnetbArtio,
-      transport: http(process.env.BERA_RPC as string),
+      transport: http(process.env.NEXT_PUBLIC_BERA_RPC as string),
     });
     // console.log(walletClient);
 
