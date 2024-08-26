@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useReadContract } from "wagmi";
 import IrysTheBeraNFTAbi from "@/app/contract/IrysTheBeraNFT-abi.json";
-import Spinner from "@/app/components/Spinner";
+import Spinner from "@/app/components/spinner";
 
 interface NftViewerProps {
   tokenId: number;
@@ -24,7 +24,7 @@ const NftViewer: React.FC<NftViewerProps> = ({ tokenId }) => {
     abi: IrysTheBeraNFTAbi,
     address: process.env.NEXT_PUBLIC_IRYS_THE_BERA_NFT as `0x${string}`,
     functionName: "tokenURI",
-    args: [BigInt(tokenId)],
+    args: [BigInt(tokenId || 0)],
   });
 
   const fetchMetadata = async () => {
@@ -48,7 +48,7 @@ const NftViewer: React.FC<NftViewerProps> = ({ tokenId }) => {
 
   useEffect(() => {
     if (tokenURI) {
-      console.log({tokenURI})
+      console.log({ tokenURI });
       fetchMetadata();
     }
   }, [tokenURI]);
@@ -56,7 +56,7 @@ const NftViewer: React.FC<NftViewerProps> = ({ tokenId }) => {
   const handleUpdateMetadata = async () => {
     setLoading(true);
     try {
-      const response = await fetch("/api/updateMetadata", {
+      const response = await fetch("/api/update-metadata", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -85,10 +85,16 @@ const NftViewer: React.FC<NftViewerProps> = ({ tokenId }) => {
         <p className="text-red-500 mt-2">{error}</p>
       ) : (
         <>
-          <img src={nftData.image} alt={nftData.name} className="rounded-lg shadow-md mb-4" />
+          <img
+            src={nftData.image}
+            alt={nftData.name}
+            className="rounded-lg shadow-md mb-4"
+          />
           <h2 className="text-xl font-bold mb-2">{nftData.name}</h2>
           <p className="text-gray-700 mb-4">{nftData.description}</p>
-          <p className="text-sm text-gray-500 mb-4">Current Level: {nftData.currentLevel}</p>
+          <p className="text-sm text-gray-500 mb-4">
+            Current Level: {nftData.currentLevel}
+          </p>
           <button
             className="btn bg-yellow-500 w-full rounded-xl"
             onClick={handleUpdateMetadata}

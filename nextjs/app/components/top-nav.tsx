@@ -7,7 +7,7 @@ const TopNav = () => {
   return (
     <nav className="bg-background py-3 px-8 flex items-center justify-between bg-pink-400">
       <div className="flex-grow flex justify-start">
-        <img src="/irys-wordmark-black.png" width={69} height={36}/>
+        <img src="/irys-wordmark-black.png" width={69} height={36} />
       </div>
       <div className="flex-grow"></div>
       <ul className="flex space-x-8 text-smoky">

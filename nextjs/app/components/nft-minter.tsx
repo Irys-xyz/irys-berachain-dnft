@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { createPublicClient, createWalletClient, custom } from "viem";
 import { berachainTestnetbArtio } from "wagmi/chains";
-import Spinner from "@/app/components/Spinner";
+import Spinner from "@/app/components/spinner";
 import IrysTheBeraNFTAbi from "@/app/contract/IrysTheBeraNFT-abi.json";
 
 interface NftMinterProps {
@@ -11,7 +11,10 @@ interface NftMinterProps {
   manifestId: string;
 }
 
-const NftMinter: React.FC<NftMinterProps> = ({ mintFunctionName, manifestId }) => {
+const NftMinter: React.FC<NftMinterProps> = ({
+  mintFunctionName,
+  manifestId,
+}) => {
   const [txHash, setTxHash] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -28,7 +31,7 @@ const NftMinter: React.FC<NftMinterProps> = ({ mintFunctionName, manifestId }) =
       // Create the wallet client using the injected provider (e.g., MetaMask)
       const walletClient = createWalletClient({
         chain: berachainTestnetbArtio,
-        transport: custom(window.ethereum!),  // Use the injected provider
+        transport: custom(window.ethereum!), // Use the injected provider
       });
 
       // Request the user's account
@@ -39,7 +42,7 @@ const NftMinter: React.FC<NftMinterProps> = ({ mintFunctionName, manifestId }) =
         address: process.env.NEXT_PUBLIC_IRYS_THE_BERA_NFT as `0x${string}`,
         abi: IrysTheBeraNFTAbi,
         functionName: mintFunctionName,
-        account: address,  // Use the connected wallet's address
+        account: address, // Use the connected wallet's address
       });
       console.log("Transaction hash:", txHash);
       setTxHash(txHash);
@@ -47,7 +50,7 @@ const NftMinter: React.FC<NftMinterProps> = ({ mintFunctionName, manifestId }) =
       // Create the public client to wait for the transaction receipt
       const publicClient = createPublicClient({
         chain: berachainTestnetbArtio,
-        transport: custom(window.ethereum!),  
+        transport: custom(window.ethereum!),
       });
       console.log("Waiting for receipt");
 
@@ -65,7 +68,7 @@ const NftMinter: React.FC<NftMinterProps> = ({ mintFunctionName, manifestId }) =
       console.log("Token ID:", tokenId);
 
       // Call the API route to set initial metadata
-      const response = await fetch("/api/setInitialMetadata", {
+      const response = await fetch("/api/initial-metadata", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -88,23 +91,29 @@ const NftMinter: React.FC<NftMinterProps> = ({ mintFunctionName, manifestId }) =
     if (!receipt.logs || receipt.logs.length < 2) {
       throw new Error("No logs found in the transaction receipt.");
     }
-  
+
     // Assuming the tokenId is in logs[1].data
     const data = receipt.logs[1].data;
-  
+
     // Convert the hex string to a BigInt and then to a number
     const tokenId = Number(BigInt(data));
-  
+
     console.log("Extracted tokenId:", tokenId);
-    
+
     return tokenId;
   };
-  
+
   return (
     <div className="flex flex-col justify-center items-center bg-slate-400 p-5 rounded-2xl">
-      <img src={previewImageUrl} alt="NFT Preview" className="rounded-lg shadow-md mb-4" />
+      <img
+        src={previewImageUrl}
+        alt="NFT Preview"
+        className="rounded-lg shadow-md mb-4"
+      />
       <button
-        className={`btn ${loading ? "loading" : ""} bg-yellow-500 w-full rounded-xl text-center`}
+        className={`btn ${
+          loading ? "loading" : ""
+        } bg-yellow-500 w-full rounded-xl text-center`}
         onClick={handleMint}
         disabled={loading}
       >
@@ -114,7 +123,12 @@ const NftMinter: React.FC<NftMinterProps> = ({ mintFunctionName, manifestId }) =
       {txHash && !error && (
         <p className="text-green-500 mt-2">
           Minting successful!{" "}
-          <a href={`${process.env.NEXT_PUBLIC_EXPLORER}/tx/${txHash}`} target="_blank" rel="noopener noreferrer" className="underline">
+          <a
+            href={`${process.env.NEXT_PUBLIC_EXPLORER}/tx/${txHash}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline"
+          >
             View Transaction
           </a>
         </p>

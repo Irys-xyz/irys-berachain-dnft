@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 import { createPublicClient, http } from "viem";
-import NftViewer from "@/app/components/NftViewer";
+import NftViewer from "@/app/components/nft-viewer";
 import IrysTheBeraNFTAbi from "@/app/contract/IrysTheBeraNFT-abi.json";
 import ERC20Abi from "@/app/contract/ERC20Abi.json";
 import { berachainTestnetbArtio } from "wagmi/chains";
@@ -22,9 +22,9 @@ const Upload = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    console.log({isConnected});
-    console.log({address});
-    
+    console.log({ isConnected });
+    console.log({ address });
+
     if (!isConnected || !address) return;
 
     const fetchData = async () => {
@@ -35,54 +35,65 @@ const Upload = () => {
         });
 
         // Fetch Base BGT Balance at Mint
-        const baseBGTBalance = await publicClient.readContract({
+        const baseBGTBalance = (await publicClient.readContract({
           address: process.env.NEXT_PUBLIC_IRYS_THE_BERA_NFT as `0x${string}`,
           abi: IrysTheBeraNFTAbi,
           functionName: "getBgtAtMintAmount",
           args: [address],
-        }) as bigint;
+        })) as bigint;
 
         const baseBGTBalanceNumber = Number(baseBGTBalance);
 
         // Calculate thresholds for level 2 and level 3
-        const level2Percent = Number(process.env.NEXT_PUBLIC_PERCENT_TO_LEVEL_2);
-        const level3Percent = Number(process.env.NEXT_PUBLIC_PERCENT_TO_LEVEL_3);
-        
-        const level2Threshold = baseBGTBalanceNumber === 0
-          ? level2Percent / 100
-          : baseBGTBalanceNumber + (baseBGTBalanceNumber * level2Percent) / 100;
-        
-        const level3Threshold = baseBGTBalanceNumber === 0
-          ? level3Percent / 100
-          : baseBGTBalanceNumber + (baseBGTBalanceNumber * level3Percent) / 100;
-        
-  
-        console.log("getting bgt for address=",address);
-        console.log("process.env.NEXT_PUBLIC_BGT_CONTRACT_ADDRESS=",process.env.NEXT_PUBLIC_BGT_CONTRACT_ADDRESS);
+        const level2Percent = Number(
+          process.env.NEXT_PUBLIC_PERCENT_TO_LEVEL_2
+        );
+        const level3Percent = Number(
+          process.env.NEXT_PUBLIC_PERCENT_TO_LEVEL_3
+        );
 
-        const currentBGTBalance = await publicClient.readContract({
-          address: process.env.NEXT_PUBLIC_BGT_CONTRACT_ADDRESS as `0x${string}`,
+        const level2Threshold =
+          baseBGTBalanceNumber === 0
+            ? level2Percent / 100
+            : baseBGTBalanceNumber +
+              (baseBGTBalanceNumber * level2Percent) / 100;
+
+        const level3Threshold =
+          baseBGTBalanceNumber === 0
+            ? level3Percent / 100
+            : baseBGTBalanceNumber +
+              (baseBGTBalanceNumber * level3Percent) / 100;
+
+        console.log("getting bgt for address=", address);
+        console.log(
+          "process.env.NEXT_PUBLIC_BGT_CONTRACT_ADDRESS=",
+          process.env.NEXT_PUBLIC_BGT_CONTRACT_ADDRESS
+        );
+
+        const currentBGTBalance = (await publicClient.readContract({
+          address: process.env
+            .NEXT_PUBLIC_BGT_CONTRACT_ADDRESS as `0x${string}`,
           abi: [
             {
-              "constant": true,
-              "inputs": [{ "name": "account", "type": "address" }],
-              "name": "balanceOf",
-              "outputs": [{ "name": "", "type": "uint256" }],
-              "type": "function",
+              constant: true,
+              inputs: [{ name: "account", type: "address" }],
+              name: "balanceOf",
+              outputs: [{ name: "", type: "uint256" }],
+              type: "function",
             },
           ],
           functionName: "balanceOf",
           args: [address],
-        }) as bigint;
-        console.log({currentBGTBalance});
+        })) as bigint;
+        console.log({ currentBGTBalance });
         // Fetch Token IDs owned by the user
-        const tokens = await publicClient.readContract({
+        const tokens = (await publicClient.readContract({
           address: process.env.NEXT_PUBLIC_IRYS_THE_BERA_NFT as `0x${string}`,
           abi: IrysTheBeraNFTAbi,
           functionName: "getTokensOwnedBy",
           args: [address],
-        }) as bigint[];
-        console.log({tokens});
+        })) as bigint[];
+        console.log({ tokens });
 
         setStats({
           baseBGTBalance: baseBGTBalanceNumber,

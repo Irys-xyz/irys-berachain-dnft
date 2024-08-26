@@ -1,20 +1,12 @@
 "use client";
 
 import { ReactNode } from "react";
-import '@rainbow-me/rainbowkit/styles.css';
-import {
-  getDefaultConfig,
-  RainbowKitProvider,
-} from '@rainbow-me/rainbowkit';
-import { WagmiProvider } from 'wagmi';
-import {
-  berachainTestnetbArtio
-} from 'wagmi/chains';
-import {
-  QueryClientProvider,
-  QueryClient,
-} from "@tanstack/react-query";
-import TopNav from "./TopNav";
+import "@rainbow-me/rainbowkit/styles.css";
+import { getDefaultConfig, RainbowKitProvider } from "@rainbow-me/rainbowkit";
+import { WagmiProvider } from "wagmi";
+import { berachainTestnetbArtio } from "wagmi/chains";
+import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
+import TopNav from "./top-nav";
 
 const config = getDefaultConfig({
   appName: "Irys Testnet Example",
@@ -31,11 +23,9 @@ export default function ClientProviders({ children }: { children: ReactNode }) {
       <QueryClientProvider client={queryClient}>
         <RainbowKitProvider>
           <TopNav />
-          <div className="">
-            {children}
-          </div>
+          <div className="">{children}</div>
         </RainbowKitProvider>
       </QueryClientProvider>
     </WagmiProvider>
   );
-};
+}

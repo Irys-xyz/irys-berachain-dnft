@@ -1,7 +1,7 @@
 "use client";
 
 import { useAccount } from "wagmi";
-import NftMinter from "@/app/components/NftMinter";
+import NftMinter from "@/app/components/nft-viewer";
 
 const Upload = () => {
   const { isConnected } = useAccount();
