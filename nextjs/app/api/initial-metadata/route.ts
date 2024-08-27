@@ -82,7 +82,7 @@ export async function POST(req: NextRequest) {
     console.log("Smart contract updated:", tx);
 
     return NextResponse.json({ status: "Success" });
-  } catch (error) {
+  } catch (error: any) {
     return NextResponse.json(
       { error: "Error: " + error.message },
       { status: 500 }

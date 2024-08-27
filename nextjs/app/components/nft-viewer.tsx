@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useReadContract } from "wagmi";
 import IrysTheBeraNFTAbi from "@/app/contract/IrysTheBeraNFT-abi.json";
 import Spinner from "@/app/components/spinner";
@@ -9,81 +9,79 @@ interface NftViewerProps {
   tokenId: number;
 }
 
-const NftViewer: React.FC<NftViewerProps> = ({ tokenId }) => {
-  const [nftData, setNftData] = useState({
-    image: "",
-    name: "",
-    description: "",
-    currentLevel: "",
-  });
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+const fetchMetadata = async (tokenURI: string) => {
+  const metadataResponse = await fetch(tokenURI);
+  if (!metadataResponse.ok) {
+    throw new Error("Failed to fetch metadata");
+  }
+  return metadataResponse.json();
+};
 
-  // Using useReadContract to read the tokenURI from the contract
-  const { data: tokenURI } = useReadContract({
+const updateMetadata = async (tokenId: number) => {
+  const response = await fetch("/api/update-metadata", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ tokenId }),
+  });
+
+  const result = await response.json();
+  if (!result.status) {
+    throw new Error(result.message || "Failed to update metadata");
+  }
+  return result;
+};
+
+const NftViewer: React.FC<NftViewerProps> = ({ tokenId }) => {
+  const queryClient = useQueryClient();
+
+  // Query to get tokenURI from the contract
+  const { data: tokenURI, error: contractError } = useReadContract({
     abi: IrysTheBeraNFTAbi,
     address: process.env.NEXT_PUBLIC_IRYS_THE_BERA_NFT as `0x${string}`,
     functionName: "tokenURI",
     args: [BigInt(tokenId || 0)],
   });
 
-  const fetchMetadata = async () => {
-    try {
-      const metadataResponse = await fetch(tokenURI as string);
-      // const metadataResponse = await fetch(`${process.env.NEXT_PUBLIC_IRYS_GATEWAY}/mutable/${tokenURI}`);
-      const metadata = await metadataResponse.json();
-      setNftData({
-        image: metadata.image,
-        name: metadata.name,
-        description: metadata.description,
-        currentLevel: metadata.currentLevel,
-      });
-      setError(null);
-    } catch (err) {
-      setError("Failed to load NFT metadata");
-    } finally {
-      setLoading(false);
-    }
-  };
+  // Query to fetch NFT metadata
+  const {
+    data: nftData,
+    error: fetchError,
+    isLoading,
+  } = useQuery({
+    queryKey: ["nftData", tokenURI],
+    queryFn: () => fetchMetadata(tokenURI as string),
+    enabled: !!tokenURI, // Only fetch metadata if tokenURI is available
+  });
 
-  useEffect(() => {
-    if (tokenURI) {
-      console.log({ tokenURI });
-      fetchMetadata();
-    }
-  }, [tokenURI]);
+  // Mutation to update metadata
+  const mutation = useMutation({
+    mutationFn: () => updateMetadata(tokenId),
+    onSuccess: () => {
+      // Invalidate and refetch the NFT data query
+      queryClient.invalidateQueries({ queryKey: ["nftData", tokenURI] });
+    },
+    onError: (error: Error) => {
+      console.error("Error updating metadata:", error.message);
+    },
+  });
 
-  const handleUpdateMetadata = async () => {
-    setLoading(true);
-    try {
-      const response = await fetch("/api/update-metadata", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ tokenId }),
-      });
+  if (isLoading) {
+    return <Spinner color="text-white" />;
+  }
 
-      const result = await response.json();
-      if (result.status === true) {
-        fetchMetadata(); // Re-fetch the metadata to update the displayed data
-      } else {
-        setError(result.message || "Failed to update metadata");
-      }
-    } catch (err) {
-      setError("Error while updating metadata");
-    } finally {
-      setLoading(false);
-    }
-  };
+  if (contractError || fetchError) {
+    return (
+      <p className="text-red-500 mt-2">
+        Error: {contractError?.message || fetchError?.message}
+      </p>
+    );
+  }
 
   return (
     <div className="flex flex-col items-center bg-slate-400 rounded-2xl">
-      {loading ? (
-        <Spinner color="text-white" />
-      ) : error ? (
-        <p className="text-red-500 mt-2">{error}</p>
-      ) : (
+      {nftData ? (
         <>
           <img
             src={nftData.image}
@@ -97,12 +95,18 @@ const NftViewer: React.FC<NftViewerProps> = ({ tokenId }) => {
           </p>
           <button
             className="btn bg-yellow-500 w-full rounded-xl"
-            onClick={handleUpdateMetadata}
-            disabled={loading}
+            onClick={() => mutation.mutate()}
+            disabled={mutation.isPending}
           >
-            {loading ? <Spinner color="text-white" /> : "Update Metadata"}
+            {mutation.isPending ? (
+              <Spinner color="text-white" />
+            ) : (
+              "Update Metadata"
+            )}
           </button>
         </>
+      ) : (
+        <p>No NFT data found</p>
       )}
     </div>
   );
