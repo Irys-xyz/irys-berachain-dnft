@@ -31,3 +31,11 @@ body {
     text-wrap: balance;
   }
 }
+
+.debug {
+  @apply border border-red-500;
+}
+
+/* * {
+  @apply outline outline-red-500/10;
+} */
