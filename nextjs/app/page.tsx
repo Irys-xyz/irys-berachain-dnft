@@ -50,13 +50,13 @@ const Home = () => {
                 <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-1 h-[calc(100%-5rem)] bg-[#181818]"></div>
 
                 <div className="flex flex-col gap-6">
-                  <div className="font-bold text-xl rounded-full w-14 h-14 flex items-center justify-center bg-[#181818] mb-4 z-10">
+                  <div className="font-bold text-xl rounded-full size-14 grid place-items-center bg-[#181818] mb-4 z-10">
                     1
                   </div>
-                  <div className="font-bold text-xl rounded-full w-14 h-14 flex items-center justify-center bg-[#181818] mb-4 z-10">
+                  <div className="font-bold text-xl rounded-full size-14 grid place-items-center bg-[#181818] mb-4 z-10">
                     2
                   </div>
-                  <div className="font-bold text-xl rounded-full w-14 h-14 flex items-center justify-center bg-[#181818] z-10">
+                  <div className="font-bold text-xl rounded-full size-14 grid place-items-center bg-[#181818] z-10">
                     3
                   </div>
                 </div>
