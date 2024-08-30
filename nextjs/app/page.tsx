@@ -1,8 +1,8 @@
-"use client";
 import { Button } from "@/components/ui/button";
-import Communities from "./components/communities";
-import Heading from "./components/heading";
-import FlagIcon from "./components/svg/flag-icon";
+import Communities from "../components/communities";
+import Heading from "../components/heading";
+import FlagIcon from "../components/svg/flag-icon";
+import MintNftNowButton from "../components/mint-nft-now-button";
 
 const STEPS = [
   {
@@ -70,7 +70,9 @@ const Home = () => {
               </div>
             </div>
           </div>
-          <Button className="mt-3">MINT YOUR NFT NOW</Button>
+          <div className="mt-3">
+            <MintNftNowButton />
+          </div>
         </div>
         <div className="col-span-12 md:col-span-6 mt-6 w-full aspect-video">
           <video className="rounded-xl" controls autoPlay>

@@ -5,3 +5,15 @@
 body {
   @apply bg-black text-white;
 }
+
+.uncompleted-step {
+  box-shadow: 0px 0px 46px 0px #4b4b4b inset, 0px 6px 24px 0px #4b4b4b66;
+}
+
+.completed-step {
+  box-shadow: 0px 6px 24px 0px #fec60166, 0px 0px 46px 0px #fec60199 inset;
+}
+
+.debug {
+  @apply border border-[tomato];
+}

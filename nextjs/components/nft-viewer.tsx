@@ -3,7 +3,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useReadContract } from "wagmi";
 import IrysTheBeraNFTAbi from "@/app/contract/IrysTheBeraNFT-abi.json";
-import Spinner from "@/app/components/spinner";
+import Spinner from "@/components/spinner";
 
 interface NftViewerProps {
   tokenId: number;

@@ -70,7 +70,7 @@ const IrysInteractiveEye = () => {
 
   return (
     <div
-      className="relative w-[48px] h-[59px] text-black dark:text-white"
+      className="relative w-[48px] h-[59px] text-white dark:text-white"
       ref={containerRef}
     >
       <svg
@@ -87,7 +87,7 @@ const IrysInteractiveEye = () => {
       </svg>
       <div
         className={[
-          "dark:bg-white bg-black rounded-full absolute",
+          "dark:bg-white bg-white rounded-full absolute",
           "blinking",
         ].join(" ")}
         style={{

@@ -3,8 +3,9 @@
 import { useState } from "react";
 import { createPublicClient, createWalletClient, custom } from "viem";
 import { berachainTestnetbArtio } from "wagmi/chains";
-import Spinner from "@/app/components/spinner";
+import Spinner from "@/components/spinner";
 import IrysTheBeraNFTAbi from "@/app/contract/IrysTheBeraNFT-abi.json";
+import { handleMint } from "./utils/custom-fetchs";
 
 interface NftMinterProps {
   mintFunctionName: "mintCommunityNFT" | "mintMainNFT";
@@ -23,69 +24,69 @@ const NftMinter: React.FC<NftMinterProps> = ({
   const nftNames = process.env.NEXT_PUBLIC_NFT_NAMES?.split(",") || [];
   const previewImageUrl = `${process.env.NEXT_PUBLIC_IRYS_GATEWAY}/${manifestId}/${nftNames[0]}`;
 
-  const handleMint = async () => {
-    setLoading(true);
-    setError(null);
+  // const handleMint = async () => {
+  //   setLoading(true);
+  //   setError(null);
 
-    try {
-      // Create the wallet client using the injected provider (e.g., MetaMask)
-      const walletClient = createWalletClient({
-        chain: berachainTestnetbArtio,
-        transport: custom(window.ethereum!), // Use the injected provider
-      });
+  //   try {
+  //     // Create the wallet client using the injected provider (e.g., MetaMask)
+  //     const walletClient = createWalletClient({
+  //       chain: berachainTestnetbArtio,
+  //       transport: custom(window.ethereum!), // Use the injected provider
+  //     });
 
-      // Request the user's account
-      const [address] = await walletClient.getAddresses();
+  //     // Request the user's account
+  //     const [address] = await walletClient.getAddresses();
 
-      // Send the transaction to mint the NFT
-      const txHash = await walletClient.writeContract({
-        address: process.env.NEXT_PUBLIC_IRYS_THE_BERA_NFT as `0x${string}`,
-        abi: IrysTheBeraNFTAbi,
-        functionName: mintFunctionName,
-        account: address, // Use the connected wallet's address
-      });
-      console.log("Transaction hash:", txHash);
-      setTxHash(txHash);
+  //     // Send the transaction to mint the NFT
+  //     const txHash = await walletClient.writeContract({
+  //       address: process.env.NEXT_PUBLIC_IRYS_THE_BERA_NFT as `0x${string}`,
+  //       abi: IrysTheBeraNFTAbi,
+  //       functionName: mintFunctionName,
+  //       account: address, // Use the connected wallet's address
+  //     });
+  //     console.log("Transaction hash:", txHash);
+  //     setTxHash(txHash);
 
-      // Create the public client to wait for the transaction receipt
-      const publicClient = createPublicClient({
-        chain: berachainTestnetbArtio,
-        transport: custom(window.ethereum!),
-      });
-      console.log("Waiting for receipt");
+  //     // Create the public client to wait for the transaction receipt
+  //     const publicClient = createPublicClient({
+  //       chain: berachainTestnetbArtio,
+  //       transport: custom(window.ethereum!),
+  //     });
+  //     console.log("Waiting for receipt");
 
-      const receipt = await publicClient.waitForTransactionReceipt({
-        hash: txHash,
-        pollingInterval: 1000, // Poll every second
-        timeout: 60_000, // Timeout after 60 seconds
-      });
+  //     const receipt = await publicClient.waitForTransactionReceipt({
+  //       hash: txHash,
+  //       pollingInterval: 1000, // Poll every second
+  //       timeout: 60_000, // Timeout after 60 seconds
+  //     });
 
-      setReceipt(receipt);
+  //     setReceipt(receipt);
 
-      console.log("Transaction receipt:", receipt);
+  //     console.log("Transaction receipt:", receipt);
 
-      const tokenId = extractTokenIdFromReceipt(receipt);
-      console.log("Token ID:", tokenId);
+  //     const tokenId = extractTokenIdFromReceipt(receipt);
+  //     console.log("Token ID:", tokenId);
 
-      // Call the API route to set initial metadata
-      const response = await fetch("/api/initial-metadata", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ tokenId }),
-      });
+  //     // Call the API route to set initial metadata
+  //     const response = await fetch("/api/initial-metadata", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({ tokenId }),
+  //     });
 
-      const result = await response.json();
-      if (result.error) {
-        setError(result.error);
-      }
-    } catch (err) {
-      setError("Minting failed. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
+  //     const result = await response.json();
+  //     if (result.error) {
+  //       setError(result.error);
+  //     }
+  //   } catch (err) {
+  //     setError("Minting failed. Please try again.");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   const extractTokenIdFromReceipt = (receipt: any): number => {
     if (!receipt.logs || receipt.logs.length < 2) {
@@ -110,6 +111,7 @@ const NftMinter: React.FC<NftMinterProps> = ({
         alt="NFT Preview"
         className="rounded-lg shadow-md mb-4"
       />
+
       <button
         className={`btn ${
           loading ? "loading" : ""

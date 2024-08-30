@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 import { createPublicClient, http } from "viem";
-import NftViewer from "@/app/components/nft-viewer";
+import NftViewer from "@/components/nft-viewer";
 import IrysTheBeraNFTAbi from "@/app/contract/IrysTheBeraNFT-abi.json";
 import ERC20Abi from "@/app/contract/ERC20Abi.json";
 import { berachainTestnetbArtio } from "wagmi/chains";

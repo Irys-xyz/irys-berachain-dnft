@@ -1,40 +1,12 @@
-import { Button } from "@/components/ui/button";
+"use client";
 import Heading from "./heading";
 import LockIcon from "./svg/lock-icon";
 import { FC } from "react";
-
-const COMMUNITIES = [
-  {
-    title: "Berachain",
-    image: "/communities/bera.png",
-    value: "berachain",
-    description: "Short description goes here this is the second line.",
-  },
-  {
-    title: "Yeet",
-    image: "/communities/yeet.png",
-    value: "yeet",
-    description: "Short description goes here this is the second line.",
-  },
-  {
-    title: "The Honey Jar",
-    image: "/communities/thehoneyjar.png",
-    value: "the-honey-jar",
-    description: "Short description goes here this is the second line.",
-  },
-  {
-    title: "Kingdomly",
-    image: "/communities/kingdomly.png",
-    value: "kingdomly",
-    description: "Short description goes here this is the second line.",
-  },
-  {
-    title: "BeraLand",
-    image: "/communities/beraland.png",
-    value: "beraland",
-    description: "Short description goes here this is the second line.",
-  },
-];
+import MintNftNowButton from "./mint-nft-now-button";
+import { useQuery } from "@tanstack/react-query";
+import { useAccount } from "wagmi";
+import { fetchStats } from "./utils/custom-fetchs";
+import { COMMUNITIES } from "./utils/constants";
 
 type LockedModalProps = {
   isVisible: boolean;
@@ -45,7 +17,7 @@ const LockedModal: FC<LockedModalProps> = ({ isVisible }) => {
 
   return (
     <>
-      <div className="backdrop-filter backdrop-blur-md bg-black absolute inset-0 bg-opacity-80 z-20"></div>
+      <div className="backdrop-filter backdrop-blur-md bg-black absolute inset-0 bg-opacity-60 z-20"></div>
       <div className="rounded-xl border-[#0F0F0F] border flex-col gap-8 bg-[#111111CC] bg-opacity-80 backdrop-blur-md px-10 size-[473px] absolute inset-0 flex items-center justify-center z-30 m-auto">
         <div className="size-20 grid place-items-center text-[#515151] bg-[#111111] rounded-full">
           <LockIcon className="mx-auto" />
@@ -57,7 +29,7 @@ const LockedModal: FC<LockedModalProps> = ({ isVisible }) => {
           Mint your Irys + Bera NFT on Berachain. Join a vibrant community.
         </p>
         <div className="px-4 w-full">
-          <Button>MINT YOUR NFT NOW</Button>
+          <MintNftNowButton />
         </div>
       </div>
     </>
@@ -68,10 +40,19 @@ type Props = {
   locked: boolean;
 };
 
-const Communities: FC<Props> = ({ locked }) => {
+const Communities: FC<Props> = () => {
+  const { address, isConnected, isDisconnected } = useAccount();
+  const { data: stats } = useQuery({
+    queryKey: ["stats", address],
+    queryFn: () => fetchStats(address as string),
+    enabled: !!address && isConnected,
+  });
+
   return (
     <div className="relative pt-16 pb-20">
-      <LockedModal isVisible={locked} />
+      <LockedModal
+        isVisible={isDisconnected || !(stats?.tokenIds?.length ?? 0 > 0)}
+      />
       <div className="container">
         <Heading level="h2" className="text-center">
           Community NFT
@@ -95,7 +76,12 @@ const Communities: FC<Props> = ({ locked }) => {
                 </p>
               </div>
               <div className="px-4 w-full">
-                <Button>MINT NFT</Button>
+                <MintNftNowButton
+                  disableAfterSuccess
+                  customText="MINT NFT"
+                  customSuccessText="NFT MINTED"
+                  communityId={community.value}
+                />
               </div>
             </div>
           ))}
