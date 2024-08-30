@@ -2,8 +2,7 @@
 import BeeIcon from "../../components/svg/bee-icon";
 import NftLevel from "../../components/nft-level/nft-level";
 import { Button } from "@/components/ui/button";
-import { useAccount, useReadContract, useWriteContract } from "wagmi";
-import IrysTheBeraNFTAbi from "@/app/contract/IrysTheBeraNFT-abi.json";
+import { useAccount } from "wagmi";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";

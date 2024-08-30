@@ -5,7 +5,7 @@ import publicClient from "@/components/utils/public-client";
 import uploadMetadata, {
   NFTMetadata,
 } from "@/components/utils/upload-metadata";
-import { requestBodySchema } from "../initialize-metadata/route";
+import { requestBodySchema } from "@/components/utils/request-body-schema";
 
 /**
  * POST /api/update-metadata
