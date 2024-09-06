@@ -1,6 +1,20 @@
-# Berachain Irys BHoneyNFT Contract Script
+# Berachain Irys BHoneyNFT Contract 
 
-Main BHoneyNFT contract that is an ERC721.
+## Description
+
+The **IrysTheBeraNFT** contract is an ERC721 NFT contract that allows users to mint up to two NFTs per wallet: one main NFT and one community NFT. 
+
+The dynamic nature of these NFTs is enabled through [Irys's mutability features](https://docs.irys.xyz/build/d/features/mutability), allowing the NFT metadata to evolve based on the user's BGT token balance.
+
+> This contract can be replaced or extended with any standard ERC721 implementation.
+
+## Unique Features
+
+- **Two NFTs per Wallet**: Users can mint two NFTs: a main NFT (`mintMainNFT()` function) and a community NFT (`mintCommunityNFT()` function). Each wallet is restricted to minting exactly one of each.
+- **Soulbound NFTs**: The NFTs are non-transferable.
+- **Dynamic Metadata**: When minting, the user's BGT token balance is snapshotted and stored onchain, allowing the NFT's metadata to evolve as their balance changes. The metadata URL is initially set to `"NOT_SET"` and is dynamically updated later through an offchain action.
+- **Integration with BGT Token**: When deploying the contract, the address of the BGT token must be provided. The contract tracks each user's BGT balance at the time of minting, and the NFT evolves based on these values.
+
 
 ## Requirements
 
@@ -41,63 +55,6 @@ WALLET_PRIVATE_KEY="<0xYOUR_WALLET_PRIVATE_KEY>"
 
 pnpm deploy:berachain;
 
-# [Expected Prompts & Outputs]:
-# ✔ Confirm deploy to network berachainTestnet (80085)? … yes
-# Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
-#   --> contracts/BHoneyNFT.sol:72:9:
-#    |
-# 72 |         address _to,
-#    |         ^^^^^^^^^^^
-# 
-# 
-# Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
-#   --> contracts/BHoneyNFT.sol:73:9:
-#    |
-# 73 |         uint256 _tokenId
-#    |         ^^^^^^^^^^^^^^^^
-# 
-# 
-# Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
-#   --> contracts/BHoneyNFT.sol:80:9:
-#    |
-# 80 |         address _operator,
-#    |         ^^^^^^^^^^^^^^^^^
-# 
-# 
-# Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
-#   --> contracts/BHoneyNFT.sol:81:9:
-#    |
-# 81 |         bool _approved
-#    |         ^^^^^^^^^^^^^^
-# 
-# 
-# Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
-#   --> contracts/BHoneyNFT.sol:88:9:
-#    |
-# 88 |         address _owner,
-#    |         ^^^^^^^^^^^^^^
-# 
-# 
-# Warning: Unused function parameter. Remove or comment out the variable name to silence this warning.
-#   --> contracts/BHoneyNFT.sol:89:9:
-#    |
-# 89 |         address operator
-#    |         ^^^^^^^^^^^^^^^^
-# 
-# 
-# Compiled 17 Solidity files successfully (evm target: paris).
-# Hardhat Ignition 🚀
-# 
-# Deploying [ BHoneyNFTModule ]
-# 
-# Batch #1
-#   Executed BHoneyNFTModule#BHoneyNFT
-# 
-# [ BHoneyNFTModule ] successfully deployed 🚀
-# 
-# Deployed Addresses
-# 
-# BHoneyNFTModule#BHoneyNFT - 0x9d7Ef808f88b1E7829AbC8DD2187C41Eb6005B8a
 ```
 
 ## Verify Contract
@@ -107,18 +64,6 @@ pnpm deploy:berachain;
 
 pnpm verify:berachain 0x9d7Ef808f88b1E7829AbC8DD2187C41Eb6005B8a "https://gateway.irys.xyz/mutable/"
 
-# [Expected Output]:
-# Successfully submitted source code for contract
-# contracts/BHoneyNFT.sol:BHoneyNFT at 0x9d7Ef808f88b1E7829AbC8DD2187C41Eb6005B8a
-# for verification on the block explorer. Waiting for verification result...
-#
-# Successfully submitted source code for contract
-# contracts/BHoneyNFT.sol:BHoneyNFT at 0x9d7Ef808f88b1E7829AbC8DD2187C41Eb6005B8a
-# for verification on the block explorer. Waiting for verification result...
-# 
-# Successfully verified contract BHoneyNFT on the block explorer.
-# https://artio.beratrail.io/address/0x9d7Ef808f88b1E7829AbC8DD2187C41Eb6005B8a#code
-# !!! NOTE: Should be: https://artio.beratrail.io/address/0x9d7Ef808f88b1E7829AbC8DD2187C41Eb6005B8a/contract/80085/code
 ```
 
 ## Run Tests
@@ -128,14 +73,4 @@ pnpm verify:berachain 0x9d7Ef808f88b1E7829AbC8DD2187C41Eb6005B8a "https://gatewa
 
 pnpm test;
 
-# [Expected Output]:
-#   BHoneyNFT
-#     Deployment
-#       ✔ Should deploy with default values (287ms)
-#     Minting
-#       ✔ Should mint an NFT
-#       ✔ Should not mint more than one NFT
-# 
-# 
-#   3 passing (303ms)
 ```
