@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
         COMMUNITIES.find((c) => c.value === communityId)?.manifest
       }/${nftNames[0]}`;
       metadata = {
-        name: `NFT #${tokenId}`,
+        name: `Community NFT #${tokenId}`,
         symbol: "IBERA",
         description: `There's a new Bera in town and her name is Irys`,
         image: previewImageUrl,
