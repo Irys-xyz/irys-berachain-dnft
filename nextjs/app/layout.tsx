@@ -3,7 +3,7 @@ import "./globals.css";
 import ClientProviders from "../components/client-providers";
 import CustomQueryClientProvider from "../components/custom-query-client-provider";
 import { GoogleAnalytics } from "@next/third-parties/google";
-
+import { Toaster } from "@/components/ui/toaster";
 import localFont from "next/font/local";
 
 const satoshi = localFont({
@@ -52,6 +52,7 @@ export default function RootLayout({
         <CustomQueryClientProvider>
           <ClientProviders>{children}</ClientProviders>
         </CustomQueryClientProvider>
+        <Toaster />
       </body>
       <GoogleAnalytics gaId="G-XYZ" />
     </html>
