@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import Irys from "@irys-network/bundler-client";
+import { Uploader } from "@irys/upload";
+import { Bera } from "@irys/upload-ethereum";
 import { createWalletClient, http } from "viem";
 import { berachainTestnetbArtio } from "wagmi/chains";
 import IrysTheBeraNFTAbi from "@/app/contract/IrysTheBeraNFT-abi.json";
@@ -23,12 +24,7 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const irys = new Irys({
-      network: "testnet",
-      token: "bera",
-      key: process.env.PRIVATE_KEY as string,
-      config: { providerUrl: env.NEXT_PUBLIC_BERA_RPC as string },
-    });
+    const irysUploader = await Uploader(Bera).withWallet(process.env.PRIVATE_KEY as string);
 
     // Check if the metadata already exists
     const existingURI = (await publicClient.readContract({
@@ -61,7 +57,7 @@ export async function POST(req: NextRequest) {
 
     // Upload the metadata to Irys
     const tags = [{ name: "Content-Type", value: "application/json" }];
-    const receipt = await irys.upload(JSON.stringify(metadata), { tags });
+    const receipt = await irysUploader.upload(JSON.stringify(metadata), { tags });
 
     // Update the tokenURI on the contract
     const walletClient = createWalletClient({

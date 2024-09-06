@@ -144,7 +144,7 @@ contract IrysTheBeraNFT is ERC721, ERC721URIStorage, Ownable {
 
     /// @dev Base URI for Irys Mutable References
     function _baseURI() internal view override returns (string memory) {
-        return "https://testnet-gateway.irys.xyz/mutable/";
+        return "https://gateway.irys.xyz/mutable/";
     }
 
     /// @dev Function to get all token IDs owned by an address
