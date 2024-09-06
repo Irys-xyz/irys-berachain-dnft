@@ -1,5 +1,7 @@
-import Irys from "@irys-network/bundler-client";
+
 import { env } from "./env";
+import { Uploader } from "@irys/upload";
+import { Bera } from "@irys/upload-ethereum";
 
 export type NFTMetadata = {
   name: string;
@@ -23,20 +25,15 @@ async function uploadMetadata({
   rootTx: string;
 }) {
   // Set up the Irys client
-  const irys = new Irys({
-    network: "testnet",
-    token: "bera",
-    key: process.env.PRIVATE_KEY as string,
-    config: { providerUrl: env.NEXT_PUBLIC_BERA_RPC as string },
-  });
-  console.log(`Connected to Irys from ${irys.address}`);
+  const irysUploader = await Uploader(Bera).withWallet(process.env.PRIVATE_KEY);
+  console.log(`Connected to Irys from ${irysUploader.address}`);
 
   // Upload the new metadata to Irys
   const tags = [
     { name: "Content-Type", value: "application/json" },
     { name: "Root-TX", value: rootTx },
   ];
-  const receipt = await irys.upload(JSON.stringify(newMetadata), { tags });
+  const receipt = await irysUploader.upload(JSON.stringify(newMetadata), { tags });
 
   return receipt;
 }

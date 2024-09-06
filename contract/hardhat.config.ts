@@ -3,7 +3,7 @@
 import { HardhatUserConfig } from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox-viem";
 import "@nomicfoundation/hardhat-chai-matchers";
-import { berachainTestnet } from "viem/chains";
+import { berachainTestnetbArtio } from "viem/chains";
 import dotenv from "dotenv";
 
 // Config
@@ -18,9 +18,9 @@ const config: HardhatUserConfig = {
     hardhat: {
       chainId: 1337,
     },
-    berachainTestnet: {
-      chainId: parseInt(`${berachainTestnet.id}`),
-      url: `${berachainTestnet.rpcUrls.default.http[0] || ""}`,
+    berachainTestnetbArtio: {
+      chainId: parseInt(`${berachainTestnetbArtio.id}`),
+      url: `${berachainTestnetbArtio.rpcUrls.default.http[0] || ""}`,
       accounts: process.env.WALLET_PRIVATE_KEY ? [`${process.env.WALLET_PRIVATE_KEY}`] : [],
     },
   },
@@ -29,11 +29,11 @@ const config: HardhatUserConfig = {
     apiKey: `${process.env.BLOCK_EXPLORER_API_KEY}`,
     customChains: [
       {
-        network: `${berachainTestnet.name || ""}`,
-        chainId: parseInt(`${berachainTestnet.id}`),
+        network: `${berachainTestnetbArtio.name || ""}`,
+        chainId: parseInt(`${berachainTestnetbArtio.id}`),
         urls: {
           apiURL: `${process.env.BLOCK_EXPLORER_API_URL}`,
-          browserURL: `${berachainTestnet.blockExplorers.default.url || ""}`,
+          browserURL: `${berachainTestnetbArtio.blockExplorers.default.url || ""}`,
         },
       },
     ],

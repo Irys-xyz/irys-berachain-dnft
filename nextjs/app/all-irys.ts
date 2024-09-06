@@ -1,29 +1,22 @@
 import Irys from "@irys-network/bundler-client";
+
+import { Uploader } from "@irys/upload";
+import { Bera } from "@irys/upload-ethereum";
 import "dotenv/config";
 import { env } from "../components/utils/env";
 
-const getIrys = async () => {
-  const network = "testnet";
-  // RPC URLs change often, use a recent one from https://chainlist.org/
-  const providerUrl = "https://rpc2.sepolia.org";
-  const token = "ethereum";
-
-  const irys = new Irys({
-    network,
-    token, // Token used for payment
-    key: process.env.PRIVATE_KEY, // ETH or SOL private key
-    config: { providerUrl }, // RPC provider URL
-  });
-  return irys;
+const getIrysUploader = async () => {
+  const irysUploader = await Uploader(Bera).withWallet(process.env.PRIVATE_KEY);
+  return irysUploader;
 };
 
 const fundIrys = async () => {
-  const irys = await getIrys();
+  const irysUploader = await getIrysUploader();
   try {
-    const fundTx = await irys.fund(irys.utils.toAtomic(0.05));
+    const fundTx = await irysUploader.fund(irysUploader.utils.toAtomic(0.05));
     console.log(
-      `Successfully funded ${irys.utils.fromAtomic(fundTx.quantity)} ${
-        irys.token
+      `Successfully funded ${irysUploader.utils.fromAtomic(fundTx.quantity)} ${
+        irysUploader.token
       }`
     );
   } catch (e) {
@@ -32,16 +25,16 @@ const fundIrys = async () => {
 };
 
 const uploadFile = async () => {
-  const irys = await getIrys();
+  const irysUploader = await getIrysUploader();
   // Your file
   const fileToUpload = "./images/image-1.png";
 
   const tags = [{ name: "application-id", value: "MyNFTDrop" }];
 
   try {
-    const receipt = await irys.uploadFile(fileToUpload, { tags: tags });
+    const receipt = await irysUploader.uploadFile(fileToUpload, { tags: tags });
     console.log(
-      `File uploaded ==> https://testnet-gateway.irys.xyz/${receipt.id}`
+      `File uploaded ==> https://gateway.irys.xyz/${receipt.id}`
     );
   } catch (e) {
     console.log("Error uploading file ", e);
@@ -49,12 +42,12 @@ const uploadFile = async () => {
 };
 
 const uploadFolder = async () => {
-  const irys = await getIrys();
+  const irysUploader = await getIrysUploader();
 
   // Upload an entire folder
   const folderToUpload = "/images/"; // Path to folder
   try {
-    const receipt = await irys.uploadFolder("./" + folderToUpload, {
+    const receipt = await irysUploader.uploadFolder("./" + folderToUpload, {
       indexFile: "", // Optional index file (file the user will load when accessing the manifest)
       batchSize: 50, // Number of items to upload at once
       keepDeleted: false, // whether to keep now deleted items from previous uploads
@@ -67,12 +60,12 @@ const uploadFolder = async () => {
 };
 
 const uploadData = async () => {
-  const irys = await getIrys();
+  const irysUploader = await getIrysUploader();
   const dataToUpload = "hirys world.";
   try {
-    const receipt = await irys.upload(dataToUpload);
+    const receipt = await irysUploader.upload(dataToUpload);
     console.log(
-      `Data uploaded ==> https://testnet-gateway.irys.xyz/${receipt.id}`
+      `Data uploaded ==> https://gateway.irys.xyz/${receipt.id}`
     );
   } catch (e) {
     console.log("Error uploading data ", e);
@@ -80,8 +73,8 @@ const uploadData = async () => {
 };
 
 const main = async (): Promise<void> => {
-  const irys = await getIrys();
-  console.log(`Connected to Irys from ${irys.address}`);
+  const irysUploader = await getIrysUploader();
+  console.log(`Connected to Irys from ${irysUploader.address}`);
 
   // await fundIrys();
 

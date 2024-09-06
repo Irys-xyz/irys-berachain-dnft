@@ -2,8 +2,8 @@
   "name": "@berachain/contract",
   "scripts": {
     "compile": "./node_modules/.bin/hardhat compile",
-    "deploy:berachain": "./node_modules/.bin/hardhat ignition deploy ./ignition/modules/IrysTheBeraNFT.ts --network berachainTestnet",
-    "verify:berachain": "./node_modules/.bin/hardhat verify --network berachainTestnet ",
+    "deploy:berachain": "./node_modules/.bin/hardhat ignition deploy ./ignition/modules/IrysTheBeraNFT.ts --network berachainTestnetbArtio",
+    "verify:berachain": "./node_modules/.bin/hardhat verify --network berachainTestnetbArtio ",
     "test": "./node_modules/.bin/hardhat test",
     "clean": "rm -rf artifacts; rm -rf cache; rm -rf ignition/deployments; rm -rf node_modules;"
   },
