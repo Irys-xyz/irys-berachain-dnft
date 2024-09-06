@@ -12,7 +12,7 @@ interface HeadingProps {
 const getHeadingClasses = (level: HeadingLevel): string => {
   switch (level) {
     case "h1":
-      return "text-7xl font-bold tracking-tight";
+      return "text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight";
     case "h2":
       return "text-6xl font-bold";
     case "h3":

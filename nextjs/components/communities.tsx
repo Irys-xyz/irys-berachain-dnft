@@ -18,7 +18,7 @@ const LockedModal: FC<LockedModalProps> = ({ isVisible }) => {
   return (
     <>
       <div className="backdrop-filter backdrop-blur-md bg-black absolute inset-0 bg-opacity-60 z-20"></div>
-      <div className="rounded-xl border-[#0F0F0F] border flex-col gap-8 bg-[#111111CC] bg-opacity-80 backdrop-blur-md px-10 size-[473px] absolute inset-0 flex items-center justify-center z-30 m-auto">
+      <div className="rounded-xl border-[#0F0F0F] border flex-col gap-8 bg-[#111111CC] bg-opacity-80 backdrop-blur-md px-10 w-[350px] h-[450px] md:size-[473px] absolute inset-0 flex items-center justify-center z-30 m-auto">
         <div className="size-20 grid place-items-center text-[#515151] bg-[#111111] rounded-full">
           <LockIcon className="mx-auto" />
         </div>

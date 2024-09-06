@@ -16,10 +16,14 @@ const Home = () => {
           your NFT evolves with you.
         </p>
       </section>
-      <section className="grid grid-cols-12 gap-10 container">
+      <section className="grid grid-cols-12 gap-0 md:gap-10 container mt-10 md:mt-16">
         <div className="col-span-12 md:col-span-6">
-          <Heading level="h3">Irys Bear NFT 🐻</Heading>
-          <p className="text-[#949494] mt-4">Lorem ipsum dolor sit amet</p>
+          <Heading level="h3" className="text-center md:text-start">
+            Irys Bear NFT 🐻
+          </Heading>
+          <p className="text-[#949494] mt-4 text-center md:text-start">
+            Lorem ipsum dolor sit amet
+          </p>
           <div className="w-full bg-[#111111] rounded-tl-xl rounded-tr-xl mt-10">
             <div className="py-4 px-5 flex items-center text-[#949494] gap-2 border-b-[#1C1C1C]">
               <FlagIcon className="text-[#FF8451]" />
@@ -36,17 +40,23 @@ const Home = () => {
           </div>
         </div>
         <div className="col-span-12 md:col-span-6 mt-6 w-full aspect-video">
-          <video className="rounded-xl" controls autoPlay>
+          <video className="rounded-xl" controls autoPlay muted>
             <source src="/nft-collab.mp4" type="video/mp4" />
           </video>
         </div>
       </section>
-      <section className="mt-28 container">
+      <section className="mt-4 md:mt-14 container">
         <p className="text-center max-w-3xl mx-auto my-24">
           This project was built using a smart contract on Berachain and NFT
           assets on Irys. NFT metadata is dynamically updated using Irys&apos;s
           Mutable References. The code is open source; you&apos;re welcome to{" "}
-          <u>fork the repo</u> and launch your version!
+          <a
+            href="https://github.com/Irys-xyz/irys-berachain-dnft"
+            target="_blank"
+          >
+            <u>fork the repo</u>
+          </a>{" "}
+          and launch your version!
         </p>
       </section>
       <section className="relative w-full bg-gradient-to-br from-[#111111] via-transparent to-transparent">

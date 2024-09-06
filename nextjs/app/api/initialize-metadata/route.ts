@@ -8,6 +8,7 @@ import { privateKeyToAccount } from "viem/accounts";
 import { env } from "@/components/utils/env";
 import publicClient from "@/components/utils/public-client";
 import { requestBodySchema } from "@/components/utils/request-body-schema";
+import { COMMUNITIES } from "@/components/utils/constants";
 
 /**
  * POST /api/initialize-metadata
@@ -24,7 +25,9 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const irysUploader = await Uploader(Bera).withWallet(process.env.PRIVATE_KEY as string);
+    const irysUploader = await Uploader(Bera).withWallet(
+      process.env.PRIVATE_KEY as string
+    );
 
     // Check if the metadata already exists
     const existingURI = (await publicClient.readContract({
@@ -41,23 +44,39 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Generate the initial metadata
-
     const nftNames = env.NEXT_PUBLIC_NFT_NAMES?.split(",") || [];
-    const previewImageUrl = `${env.NEXT_PUBLIC_IRYS_GATEWAY}/${env.NEXT_PUBLIC_BASE_NFT_MANIFEST_ID}/${nftNames[0]}`;
 
-    // TODO: Include the communityId in the metadata if it's provided
-    const metadata = {
-      name: `NFT #${tokenId}`,
-      symbol: "IBERA",
-      description: `There's a new Bera in town and her name is Irys`,
-      image: previewImageUrl,
-      currentLevel: "1",
-    };
+    // Generate the initial metadata
+    let metadata;
+    let previewImageUrl;
+    if (communityId) {
+      previewImageUrl = `${env.NEXT_PUBLIC_IRYS_GATEWAY}/${
+        COMMUNITIES.find((c) => c.value === communityId)?.manifest
+      }/${nftNames[0]}`;
+      metadata = {
+        name: `NFT #${tokenId}`,
+        symbol: "IBERA",
+        description: `There's a new Bera in town and her name is Irys`,
+        image: previewImageUrl,
+        currentLevel: "1",
+        communityId: communityId,
+      };
+    } else {
+      previewImageUrl = `${env.NEXT_PUBLIC_IRYS_GATEWAY}/${env.NEXT_PUBLIC_BASE_NFT_MANIFEST_ID}/${nftNames[0]}`;
+      metadata = {
+        name: `NFT #${tokenId}`,
+        symbol: "IBERA",
+        description: `There's a new Bera in town and her name is Irys`,
+        image: previewImageUrl,
+        currentLevel: "1",
+      };
+    }
 
     // Upload the metadata to Irys
     const tags = [{ name: "Content-Type", value: "application/json" }];
-    const receipt = await irysUploader.upload(JSON.stringify(metadata), { tags });
+    const receipt = await irysUploader.upload(JSON.stringify(metadata), {
+      tags,
+    });
 
     // Update the tokenURI on the contract
     const walletClient = createWalletClient({

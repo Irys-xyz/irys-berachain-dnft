@@ -12,7 +12,7 @@ const config = getDefaultConfig({
   appName: "Irys Testnet Example",
   projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_ID!,
   chains: [berachainTestnetbArtio],
-  ssr: true, // If your dApp uses server side rendering (SSR)
+  ssr: true,
 });
 
 const queryClient = new QueryClient();
