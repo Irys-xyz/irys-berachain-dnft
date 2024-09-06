@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import ClientProviders from "../components/client-providers";
 import CustomQueryClientProvider from "../components/custom-query-client-provider";
+import { GoogleAnalytics } from "@next/third-parties/google";
 
 import localFont from "next/font/local";
 
@@ -52,6 +53,7 @@ export default function RootLayout({
           <ClientProviders>{children}</ClientProviders>
         </CustomQueryClientProvider>
       </body>
+      <GoogleAnalytics gaId="G-XYZ" />
     </html>
   );
 }
