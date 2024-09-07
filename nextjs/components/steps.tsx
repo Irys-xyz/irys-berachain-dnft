@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { FC } from "react";
 import Heading from "./heading";
 import { Button } from "./ui/button";
 import { useToast } from "@/components/hooks/use-toast";
@@ -58,7 +58,11 @@ const STEPS = [
   },
 ];
 
-const Steps = () => {
+/**
+ * Home minting steps
+ * @returns {JSX.Element}
+ */
+const Steps: FC = (): JSX.Element => {
   const { toast } = useToast();
 
   return (

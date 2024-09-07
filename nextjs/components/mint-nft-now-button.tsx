@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { useAccount } from "wagmi";
 import { handleMint } from "./utils/custom-fetchs";
 import { Button } from "@/components/ui/button";
-import Spinner from "./spinner";
+import SpinnerIcon from "@/components/svg/spinner-icon";
 import { useRouter } from "next/navigation";
 import { COMMUNITIES } from "./utils/constants";
 
@@ -59,7 +59,7 @@ const MintNftNowButton = ({ className, ...props }: Props) => {
       disabled={loading || props.disableAfterSuccess ? success : false}
     >
       {loading ? (
-        <Spinner />
+        <SpinnerIcon />
       ) : success ? (
         props.customSuccessText ?? "CHECK MY WALLET"
       ) : (

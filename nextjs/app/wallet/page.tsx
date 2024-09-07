@@ -20,17 +20,15 @@ import {
   DialogHeader,
 } from "@/components/ui/dialog";
 import { DialogClose } from "@radix-ui/react-dialog";
-import Spinner from "@/components/spinner";
+import SpinnerIcon from "@/components/svg/spinner-icon";
 
 const Wallet = () => {
   const { address, isConnected } = useAccount();
   const { openConnectModal } = useConnectModal();
 
   const handleMintNftNow = () => {
-    if (!openConnectModal) return;
-
     if (!isConnected) {
-      openConnectModal();
+      openConnectModal?.();
     } else {
       handleMint({
         mintFunctionName: "mintMainNFT",
@@ -48,6 +46,8 @@ const Wallet = () => {
     enabled: !!address && isConnected,
   });
 
+  console.log("stats", stats);
+
   const queryClient = useQueryClient();
 
   // Query to fetch NFT metadata
@@ -60,9 +60,8 @@ const Wallet = () => {
     queryKey: ["nftData"],
     queryFn: () =>
       fetchMetadata(stats?.tokenIds[2] || (stats?.tokenIds[0] as any)),
-    // fetchMetadata(26),
     refetchInterval: 1000,
-    enabled: !!stats?.tokenIds.length, // Only fetch metadata if tokenURI is available
+    enabled: !!stats?.tokenIds.length,
   });
 
   // Mutation to update metadata
@@ -84,7 +83,7 @@ const Wallet = () => {
   if (
     !isConnected ||
     !address ||
-    (alreadyFetchedNftData && !nftData) ||
+    (!alreadyFetchedNftData && !nftData) ||
     (alreadyFetchedNftData && !stats?.tokenIds.length)
   ) {
     return (
@@ -96,11 +95,10 @@ const Wallet = () => {
         />
         <div className="flex items-center justify-center flex-col gap-5 pt-32">
           <h1 className="text-6xl font-bold text-white text-center max-w-3xl tracking-tight">
-            You need to mint lorem ipsum dolor set amed nuele
+            You don&apos;t have a NFT yet
           </h1>
           <p className="text-[#949494] text-center">
-            Mint your Irys + Bera NFT on Berachain. Join a vibrant community
-            lorem
+            Mint your Irys + Bera NFT on Berachain. Join a vibrant community.
           </p>
           <div className="mt-24 z-50">
             <Button
@@ -218,7 +216,11 @@ const Wallet = () => {
             disabled={updateMetadataMutation.isPending}
             onClick={() => updateMetadataMutation.mutate()}
           >
-            {updateMetadataMutation.isPending ? <Spinner /> : "Update Metadata"}
+            {updateMetadataMutation.isPending ? (
+              <SpinnerIcon />
+            ) : (
+              "Update Metadata"
+            )}
           </Button>
         </div>
       </div>

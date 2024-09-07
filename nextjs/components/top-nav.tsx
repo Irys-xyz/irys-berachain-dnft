@@ -7,10 +7,15 @@ import { Button } from "@/components/ui/button";
 import { useAccount, useDisconnect } from "wagmi";
 import WalletIcon from "./svg/wallet-icon";
 import LogoutIcon from "./svg/logout-icon";
+import { FC } from "react";
 
-const TopNav = () => {
+/**
+ * TopNav component
+ * @returns {JSX.Element}
+ */
+const TopNav: FC = (): JSX.Element => {
   const { openConnectModal } = useConnectModal();
-  const { address, isConnected } = useAccount();
+  const { isConnected } = useAccount();
   const { disconnect } = useDisconnect();
 
   return (
