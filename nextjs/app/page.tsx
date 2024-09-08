@@ -1,6 +1,5 @@
 import Steps from "@/components/steps";
 import Communities from "@/components/communities";
-import Heading from "@/components/heading";
 import FlagIcon from "@/components/svg/flag-icon";
 import MintNftNowButton from "@/components/mint-nft-now-button";
 import VideoSection from "@/components/video-section";

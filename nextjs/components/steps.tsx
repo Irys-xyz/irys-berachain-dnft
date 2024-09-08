@@ -1,6 +1,5 @@
 "use client";
-import React, { FC } from "react";
-import Heading from "./heading";
+import { FC } from "react";
 import { Button } from "./ui/button";
 import { useToast } from "@/components/hooks/use-toast";
 import { env } from "@/utils/env";
@@ -75,9 +74,7 @@ const Steps: FC = (): JSX.Element => {
           <span className="absolute flex items-center justify-center w-8 h-8 bg-[#2A2A2A] rounded-full -start-4 dark:ring-gray-900 dark:bg-green-900 ring ring-[#2A2A2A]">
             {index + 1}
           </span>
-          <Heading level="h4" className="text-white">
-            {step.title}
-          </Heading>
+          <h3 className="text-white text-base font-bold">{step.title}</h3>
           <p className="text-[#949494] mt-3">{step.paragraph}</p>
           {step.btn && (
             <Button
