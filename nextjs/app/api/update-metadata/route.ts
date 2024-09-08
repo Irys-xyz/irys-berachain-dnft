@@ -94,7 +94,6 @@ export async function POST(req: NextRequest) {
       functionName: "getBgtAtMintAmount",
       args: [walletAddress],
     })) as bigint;
-    console.log(`baseBGTAmount ${baseBGTAmount.toString()}`);
 
     // Get the current BGT balance
     const currentBGTBalance = (await publicClient.readContract({
@@ -111,7 +110,6 @@ export async function POST(req: NextRequest) {
       functionName: "balanceOf",
       args: [walletAddress],
     })) as bigint;
-    console.log(`currentBGTBalance ${currentBGTBalance.toString()}`);
 
     for (let tokenId of tokens) {
       // Retrieve the current token URI
@@ -127,8 +125,6 @@ export async function POST(req: NextRequest) {
       const currentMetadata = await metadataResponse.json();
 
       const currentLevel = parseInt(currentMetadata.currentLevel, 10);
-      // const currentLevel = parseInt(0);
-      console.log(`currentLevel=${currentLevel}`);
 
       if (currentLevel >= 3) {
         const otherTokensLevels = await Promise.all(
@@ -149,9 +145,6 @@ export async function POST(req: NextRequest) {
         );
 
         if (otherTokensLevels.some((level) => level < 3)) {
-          console.log(
-            `Skipping token ${tokenId} because not all other tokens are at level 3.`
-          );
           continue; // Skip to the next token
         }
 
@@ -168,8 +161,6 @@ export async function POST(req: NextRequest) {
 
       let percentIncreaseRequired =
         LEVEL_PERCENT_MAP[currentLevel] ?? BigInt(0);
-
-      console.log(`percentIncreaseRequired=${percentIncreaseRequired}`);
 
       // Calculate the required BGT balance using bigint arithmetic
       // const requiredBGTBalance =
@@ -211,8 +202,6 @@ export async function POST(req: NextRequest) {
         newMetadata,
         rootTx: currentURI.split("/").pop() as string,
       });
-
-      console.log(`Updated metadata for token ${tokenId}`);
     }
 
     const encryptedDate = await aesGcmEncrypt(

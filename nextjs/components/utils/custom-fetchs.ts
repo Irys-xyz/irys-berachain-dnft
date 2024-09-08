@@ -28,7 +28,6 @@ const fetchMetadata = async (tokenId: number) => {
     result.toString() === `${IRYS_GATEWAY}/mutable/NOT_SET` ||
     result.toString() === `${IRYS_TESTNET_GATEWAY}/mutable/NOT_SET`
   ) {
-    console.log("metadata not initialized", result);
     await fetch("/api/initialize-metadata", {
       method: "POST",
       headers: {
@@ -38,8 +37,6 @@ const fetchMetadata = async (tokenId: number) => {
         tokenId,
       }),
     });
-
-    console.log("metadata initialized", result);
 
     return fetchMetadata(tokenId);
   }
