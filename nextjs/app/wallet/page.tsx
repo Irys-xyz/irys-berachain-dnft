@@ -1,6 +1,6 @@
 "use client";
-import BeeIcon from "../../components/svg/bee-icon";
-import NftLevel from "../../components/nft-level/nft-level";
+import BeeIcon from "@/components/svg/bee-icon";
+import NftLevel from "@/components/nft-level/nft-level";
 import { Button } from "@/components/ui/button";
 import { useAccount } from "wagmi";
 
@@ -11,13 +11,13 @@ import {
   fetchMetadata,
   updateMetadata,
   handleMint,
-} from "../../components/utils/custom-fetchs";
+} from "@/lib/custom-fetchs";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import SpinnerIcon from "@/components/svg/spinner-icon";
 import { useState } from "react";
 import { useToast } from "@/components/hooks/use-toast";
 import ErrorDialog from "@/components/error-dialog";
-import extractReason from "@/components/utils/evm-error-reason";
+import extractReason from "@/utils/evm-error-reason";
 import NftLevelMobile from "@/components/nft-level/nft-level-mobile";
 
 const Wallet = () => {
@@ -59,7 +59,6 @@ const Wallet = () => {
     queryFn: () => fetchStats(address as string),
     enabled: !!address && isConnected,
   });
-  console.log("🚀 ~ Wal ~ stats:", stats);
 
   const queryClient = useQueryClient();
 

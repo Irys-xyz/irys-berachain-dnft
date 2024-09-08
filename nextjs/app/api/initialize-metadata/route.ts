@@ -3,12 +3,12 @@ import { Uploader } from "@irys/upload";
 import { Bera } from "@irys/upload-ethereum";
 import { createWalletClient, http } from "viem";
 import { berachainTestnetbArtio } from "wagmi/chains";
-import IrysTheBeraNFTAbi from "@/app/contract/IrysTheBeraNFT-abi.json";
+import IrysTheBeraNFTAbi from "@/app/contract/irys-the-bera-nft-abi.json";
 import { privateKeyToAccount } from "viem/accounts";
-import { env } from "@/components/utils/env";
-import publicClient from "@/components/utils/public-client";
-import { initializeMetadataSchema } from "@/components/utils/route-params-validators";
-import { COMMUNITIES } from "@/components/utils/constants";
+import { env } from "@/utils/env";
+import publicClient from "@/lib/public-client";
+import { initializeMetadataSchema } from "@/utils/route-params-validators";
+import { COMMUNITIES } from "@/utils/constants";
 
 /**
  * POST /api/initialize-metadata

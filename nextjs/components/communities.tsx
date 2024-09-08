@@ -5,8 +5,8 @@ import { FC } from "react";
 import MintNftNowButton from "./mint-nft-now-button";
 import { useQuery } from "@tanstack/react-query";
 import { useAccount } from "wagmi";
-import { fetchStats } from "./utils/custom-fetchs";
-import { COMMUNITIES } from "./utils/constants";
+import { fetchStats } from "@/lib/custom-fetchs";
+import { COMMUNITIES } from "@/utils/constants";
 import clsx from "clsx";
 
 type LockedModalProps = {

@@ -3,17 +3,20 @@ import React, { FC } from "react";
 import Heading from "./heading";
 import { Button } from "./ui/button";
 import { useToast } from "@/components/hooks/use-toast";
+import { env } from "@/utils/env";
 
 const NETWORK_PARAMS = {
-  chainId: "0x138D4",
+  chainId: (
+    "0" + Number(env.NEXT_PUBLIC_BERA_CHAIN_ID).toString(16)
+  ).toUpperCase(),
   chainName: "Berachain bArtio",
-  rpcUrls: ["https://bartio.rpc.berachain.com/"],
+  rpcUrls: [env.NEXT_PUBLIC_BERA_RPC],
   nativeCurrency: {
     name: "Berachain",
     symbol: "BERA",
     decimals: 18,
   },
-  blockExplorerUrls: ["https://bartio.beratrail.io/"],
+  blockExplorerUrls: [env.NEXT_PUBLIC_EXPLORER],
 };
 
 const STEPS = [

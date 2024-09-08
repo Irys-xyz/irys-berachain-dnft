@@ -7,7 +7,7 @@ import BeeIcon from "./svg/bee-icon";
  * NFT Video Component
  * @returns {JSX.Element}
  */
-const VideoSection: FC = () => {
+const VideoSection: FC = (): JSX.Element => {
   const [isLoading, setIsLoading] = useState(true);
 
   const handleReady = () => {
@@ -31,7 +31,6 @@ const VideoSection: FC = () => {
           playing
           width="100%"
           height={"auto"}
-          // height="100%"
           onReady={handleReady}
           style={{ opacity: isLoading ? 0 : 1 }}
         />

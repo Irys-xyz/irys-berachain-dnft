@@ -1,22 +1,17 @@
 import { cookies } from "next/headers";
 
 import { NextRequest, NextResponse } from "next/server";
-import IrysTheBeraNFTAbi from "@/app/contract/IrysTheBeraNFT-abi.json";
-import { env } from "@/components/utils/env";
-import publicClient from "@/components/utils/public-client";
-import uploadMetadata, {
-  NFTMetadata,
-} from "@/components/utils/upload-metadata";
+import IrysTheBeraNFTAbi from "@/app/contract/irys-the-bera-nft-abi.json";
+import { env } from "@/utils/env";
+import publicClient from "@/lib/public-client";
+import uploadMetadata, { NFTMetadata } from "@/lib/upload-metadata";
 import {
   COMMUNITIES,
   ERROR_UPDATE_METADATA_24H,
   LEVEL_PERCENT_MAP,
-} from "@/components/utils/constants";
-import {
-  aesGcmDecrypt,
-  aesGcmEncrypt,
-} from "@/components/utils/encrypt-decrypt";
-import { updateMetadataSchema } from "@/components/utils/route-params-validators";
+} from "@/utils/constants";
+import { aesGcmDecrypt, aesGcmEncrypt } from "@/utils/encrypt-decrypt";
+import { updateMetadataSchema } from "@/utils/route-params-validators";
 
 /**
  * POST /api/update-metadata

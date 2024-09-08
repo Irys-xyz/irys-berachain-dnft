@@ -1,10 +1,9 @@
 import { createWalletClient, custom } from "viem";
-import IrysTheBeraNFTAbi from "@/app/contract/IrysTheBeraNFT-abi.json";
+import IrysTheBeraNFTAbi from "@/app/contract/irys-the-bera-nft-abi.json";
 import { berachainTestnetbArtio } from "viem/chains";
-import {} from "viem/chains";
-import { env } from "./env";
-import publicClient from "./public-client";
-import { COMMUNITIES, IRYS_GATEWAY, IRYS_TESTNET_GATEWAY } from "./constants";
+import { env } from "@/utils/env";
+import publicClient from "@/lib/public-client";
+import { COMMUNITIES } from "@/utils/constants";
 
 /**
  * Fetches the metadata for a given tokenId.
@@ -12,8 +11,8 @@ import { COMMUNITIES, IRYS_GATEWAY, IRYS_TESTNET_GATEWAY } from "./constants";
  * @returns {Promise<object>} - The metadata for the given tokenId.
  * @throws {Error} - If the metadata fetch fails.
  * @example
- * fetchMetadata("1");
- * fetchMetadata("2");
+ * fetchMetadata(1);
+ * fetchMetadata(2);
  */
 const fetchMetadata = async (tokenId: number) => {
   // Fetch Base BGT Balance at Mint
@@ -24,10 +23,7 @@ const fetchMetadata = async (tokenId: number) => {
     args: [tokenId],
   })) as bigint;
 
-  if (
-    result.toString() === `${IRYS_GATEWAY}/mutable/NOT_SET` ||
-    result.toString() === `${IRYS_TESTNET_GATEWAY}/mutable/NOT_SET`
-  ) {
+  if (result.toString() === `${env.NEXT_PUBLIC_IRYS_GATEWAY}/mutable/NOT_SET`) {
     await fetch("/api/initialize-metadata", {
       method: "POST",
       headers: {

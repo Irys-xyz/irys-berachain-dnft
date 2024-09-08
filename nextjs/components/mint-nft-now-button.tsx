@@ -2,13 +2,13 @@
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import React, { useState } from "react";
 import { useAccount } from "wagmi";
-import { handleMint } from "./utils/custom-fetchs";
+import { handleMint } from "@/lib/custom-fetchs";
 import { Button } from "@/components/ui/button";
 import SpinnerIcon from "@/components/svg/spinner-icon";
 import { useRouter } from "next/navigation";
-import { COMMUNITIES } from "./utils/constants";
+import { COMMUNITIES } from "@/utils/constants";
 import { useToast } from "./hooks/use-toast";
-import extractReason from "./utils/evm-error-reason";
+import extractReason from "@/utils/evm-error-reason";
 import { useQueryClient } from "@tanstack/react-query";
 
 interface Props extends React.HTMLAttributes<HTMLButtonElement> {

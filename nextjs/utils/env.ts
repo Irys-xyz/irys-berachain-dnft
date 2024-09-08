@@ -1,6 +1,8 @@
 import { z } from "zod";
 
 const envSchema = z.object({
+  NEXT_PUBLIC_BERA_CHAIN_ID: z.string(),
+  NEXT_PUBLIC_BERA_CHAIN_NAME: z.string(),
   NEXT_PUBLIC_BERA_RPC: z.string(),
   NEXT_PUBLIC_BGT_CONTRACT_ADDRESS: z.string(),
   NEXT_PUBLIC_EXPLORER: z.string(),
@@ -23,6 +25,9 @@ const envSchema = z.object({
  * Only works with variables that are prefixed with NEXT_PUBLIC_
  */
 export const env = envSchema.parse({
+  NEXT_PUBLIC_BERA_CHAIN_ID: process.env.NEXT_PUBLIC_BERA_CHAIN_ID as string,
+  NEXT_PUBLIC_BERA_CHAIN_NAME: process.env
+    .NEXT_PUBLIC_BERA_CHAIN_NAME as string,
   NEXT_PUBLIC_BERA_RPC: process.env.NEXT_PUBLIC_BERA_RPC as string,
   NEXT_PUBLIC_BGT_CONTRACT_ADDRESS: process.env
     .NEXT_PUBLIC_BGT_CONTRACT_ADDRESS as string,

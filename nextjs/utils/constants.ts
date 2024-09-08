@@ -1,4 +1,4 @@
-import { env } from "./env";
+import { env } from "@/utils/env";
 
 const COMMUNITIES = [
   {
@@ -38,8 +38,6 @@ const COMMUNITIES = [
   },
 ] as const;
 
-const IRYS_GATEWAY = "https://gateway.irys.xyz";
-const IRYS_TESTNET_GATEWAY = "https://testnet-gateway.irys.xyz";
 const ERROR_UPDATE_METADATA_24H =
   "You can only try updating NFT metadata once per day. Try again tomorrow.";
 
@@ -49,10 +47,4 @@ const LEVEL_PERCENT_MAP: Record<number, bigint> = {
   2: BigInt(parseInt(env.NEXT_PUBLIC_PERCENT_TO_LEVEL_3 as string, 10)),
 };
 
-export {
-  COMMUNITIES,
-  IRYS_GATEWAY,
-  IRYS_TESTNET_GATEWAY,
-  ERROR_UPDATE_METADATA_24H,
-  LEVEL_PERCENT_MAP,
-};
+export { COMMUNITIES, ERROR_UPDATE_METADATA_24H, LEVEL_PERCENT_MAP };

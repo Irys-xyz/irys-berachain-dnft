@@ -6,11 +6,11 @@ import {
   DialogHeader,
 } from "@/components/ui/dialog";
 import clsx from "clsx";
-import BeeIcon from "./svg/bee-icon";
-import RefreshIcon from "./svg/refresh-icon";
-import { Button } from "./ui/button";
+import BeeIcon from "@/components/svg/bee-icon";
+import RefreshIcon from "@/components/svg/refresh-icon";
+import { Button } from "@/components/ui/button";
 
-import { ERROR_UPDATE_METADATA_24H } from "./utils/constants";
+import { ERROR_UPDATE_METADATA_24H } from "@/utils/constants";
 
 /**
  * Dialog that shows an error message from updateMetadataMutation.
