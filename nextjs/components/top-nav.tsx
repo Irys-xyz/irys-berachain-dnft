@@ -59,7 +59,7 @@ const TopNav: FC = (): JSX.Element => {
               </Button> */}
             </Link>
             <button onClick={() => disconnect()}>
-              <LogoutIcon className="text-[#515151]" />
+              <LogoutIcon className="text-[#515151] hover:text-white/50" />
             </button>
           </div>
         </>
