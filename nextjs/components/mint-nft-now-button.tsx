@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { COMMUNITIES } from "./utils/constants";
 import { useToast } from "./hooks/use-toast";
 import extractReason from "./utils/evm-error-reason";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface Props extends React.HTMLAttributes<HTMLButtonElement> {
   customText?: string;
@@ -18,6 +19,7 @@ interface Props extends React.HTMLAttributes<HTMLButtonElement> {
 }
 
 const MintNftNowButton = ({ className, ...props }: Props) => {
+  const queryClient = useQueryClient();
   const { isConnected } = useAccount();
   const { openConnectModal } = useConnectModal();
   const [loading, setLoading] = useState<boolean>(false);
@@ -53,6 +55,9 @@ const MintNftNowButton = ({ className, ...props }: Props) => {
         });
       } else {
         setSuccess(true);
+        ["stats", "nftData", "communityNftData"].forEach((key) => {
+          queryClient.invalidateQueries({ queryKey: [key] });
+        });
       }
     }
     setLoading(false);
