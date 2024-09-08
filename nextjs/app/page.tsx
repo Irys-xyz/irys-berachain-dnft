@@ -7,11 +7,11 @@ import VideoSection from "@/components/video-section";
 const Home = () => {
   return (
     <main className="flex flex-col items-center justify-center pb-16 pt-8 text-white">
-      <section className="p-8 md:p-12 lg:p-28 text-left">
-        <h1 className="text-center max-w-7xl text-4xl md:text-6xl lg:text-6xl font-bold tracking-tight">
+      <section className="p-8 md:p-12 xl:p-20 text-left">
+        <h1 className="text-center max-w-7xl text-4xl md:text-5xl xl:text-6xl font-bold tracking-tight !leading-normal">
           Mint Your Dynamic NFT—Support Your Community, Be Part of the Lore.
         </h1>
-        <p className="!text-center mt-10 text-[#949494] max-w-4xl mx-auto text-lg">
+        <p className="!text-center mt-10 text-[#949494] max-w-4xl mx-auto text-lg leading-loose">
           Back the ecosystem project you believe in—your NFT evolves with your
           $BGT, reflecting your growing commitment. Unlock exclusive, hand-drawn
           designs with each evolution. PS. They double as phone lock screens.
@@ -20,7 +20,7 @@ const Home = () => {
       <section className="grid grid-cols-12 gap-0 md:gap-10 container mt-10 md:mt-16">
         <div className="col-span-12 md:col-span-6">
           <h2 className="text-2xl md:text-3xl font-bold text-center md:text-start">
-            Mint Your Dynamic Irys + Bera NFT in Just 3 Steps
+            Mint in Just 3 Steps
           </h2>
           <p className="text-[#949494] mt-4 text-center md:text-start">
             Mint Two Exclusive NFTs: The Irys x Berachain Collab and One From
@@ -48,8 +48,8 @@ const Home = () => {
           </video> */}
         </div>
       </section>
-      <section className="mt-4 md:mt-14 container">
-        <p className="text-center max-w-3xl mx-auto my-24 text-lg">
+      <section className="mt-4 container">
+        <p className="text-center max-w-3xl mx-auto my-24 text-lg leading-loose">
           Built on Berachain and powered by Irys, this NFT evolves with
           you—thanks to Irys&apos;s dynamic Mutable References. This isn&apos;t
           just an NFT drop—it&apos;s a living story of your bArtio growth. And

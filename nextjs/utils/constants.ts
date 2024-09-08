@@ -13,8 +13,7 @@ const COMMUNITIES = [
     title: "Yeet",
     image: "/communities/yeet.png",
     value: "yeet",
-    description:
-      "Home of the most Yeetarded products in the berachain ecosystem. Yeetards only.",
+    description: "Home of the most Yeetarded products in the Berachain.",
     manifest: env.NEXT_PUBLIC_YEET_COMMUNITY_MANIFEST_ID,
   },
   {
