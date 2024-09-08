@@ -54,7 +54,7 @@ export default function RootLayout({
         </CustomQueryClientProvider>
         <Toaster />
       </body>
-      <GoogleAnalytics gaId="G-XYZ" />
+      <GoogleAnalytics gaId="G-1T5RB911RD" />
     </html>
   );
 }
