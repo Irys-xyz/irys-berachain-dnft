@@ -1,23 +1,72 @@
 import { z } from "zod";
 
 const envSchema = z.object({
-  NEXT_PUBLIC_BERA_CHAIN_ID: z.string(),
-  NEXT_PUBLIC_BERA_CHAIN_NAME: z.string(),
-  NEXT_PUBLIC_BERA_RPC: z.string(),
-  NEXT_PUBLIC_BGT_CONTRACT_ADDRESS: z.string(),
-  NEXT_PUBLIC_EXPLORER: z.string(),
-  NEXT_PUBLIC_IRYS_GATEWAY: z.string(),
-  NEXT_PUBLIC_WALLET_CONNECT_ID: z.string(),
-  NEXT_PUBLIC_IRYS_THE_BERA_NFT: z.string(),
-  NEXT_PUBLIC_PERCENT_TO_LEVEL_2: z.string(),
-  NEXT_PUBLIC_PERCENT_TO_LEVEL_3: z.string(),
-  NEXT_PUBLIC_NFT_NAMES: z.string(),
-  NEXT_PUBLIC_BASE_NFT_MANIFEST_ID: z.string(),
-  NEXT_PUBLIC_YEET_COMMUNITY_MANIFEST_ID: z.string(),
-  NEXT_PUBLIC_BERALAND_COMMUNITY_MANIFEST_ID: z.string(),
-  NEXT_PUBLIC_BERAMARKET_COMMUNITY_MANIFEST_ID: z.string(),
-  NEXT_PUBLIC_KINGDOMLY_COMMUNITY_MANIFEST_ID: z.string(),
-  NEXT_PUBLIC_THJ_COMMUNITY_MANIFEST_ID: z.string(),
+  NEXT_PUBLIC_BERA_CHAIN_ID: z
+    .string()
+    .min(1, "NEXT_PUBLIC_BERA_CHAIN_ID is required and cannot be empty"),
+  NEXT_PUBLIC_BERA_CHAIN_NAME: z
+    .string()
+    .min(1, "NEXT_PUBLIC_BERA_CHAIN_NAME is required and cannot be empty"),
+  NEXT_PUBLIC_BERA_RPC: z
+    .string()
+    .min(1, "NEXT_PUBLIC_BERA_RPC is required and cannot be empty"),
+  NEXT_PUBLIC_BGT_CONTRACT_ADDRESS: z
+    .string()
+    .min(1, "NEXT_PUBLIC_BGT_CONTRACT_ADDRESS is required and cannot be empty"),
+  NEXT_PUBLIC_EXPLORER: z
+    .string()
+    .min(1, "NEXT_PUBLIC_EXPLORER is required and cannot be empty"),
+  NEXT_PUBLIC_IRYS_GATEWAY: z
+    .string()
+    .min(1, "NEXT_PUBLIC_IRYS_GATEWAY is required and cannot be empty"),
+  NEXT_PUBLIC_WALLET_CONNECT_ID: z
+    .string()
+    .min(1, "NEXT_PUBLIC_WALLET_CONNECT_ID is required and cannot be empty"),
+  NEXT_PUBLIC_IRYS_THE_BERA_NFT: z
+    .string()
+    .min(1, "NEXT_PUBLIC_IRYS_THE_BERA_NFT is required and cannot be empty"),
+  NEXT_PUBLIC_PERCENT_TO_LEVEL_2: z
+    .string()
+    .min(1, "NEXT_PUBLIC_PERCENT_TO_LEVEL_2 is required and cannot be empty"),
+  NEXT_PUBLIC_PERCENT_TO_LEVEL_3: z
+    .string()
+    .min(1, "NEXT_PUBLIC_PERCENT_TO_LEVEL_3 is required and cannot be empty"),
+  NEXT_PUBLIC_NFT_NAMES: z
+    .string()
+    .min(1, "NEXT_PUBLIC_NFT_NAMES is required and cannot be empty"),
+  NEXT_PUBLIC_BASE_NFT_MANIFEST_ID: z
+    .string()
+    .min(1, "NEXT_PUBLIC_BASE_NFT_MANIFEST_ID is required and cannot be empty"),
+  NEXT_PUBLIC_YEET_COMMUNITY_MANIFEST_ID: z
+    .string()
+    .min(
+      1,
+      "NEXT_PUBLIC_YEET_COMMUNITY_MANIFEST_ID is required and cannot be empty"
+    ),
+  NEXT_PUBLIC_BERALAND_COMMUNITY_MANIFEST_ID: z
+    .string()
+    .min(
+      1,
+      "NEXT_PUBLIC_BERALAND_COMMUNITY_MANIFEST_ID is required and cannot be empty"
+    ),
+  NEXT_PUBLIC_BERAMARKET_COMMUNITY_MANIFEST_ID: z
+    .string()
+    .min(
+      1,
+      "NEXT_PUBLIC_BERAMARKET_COMMUNITY_MANIFEST_ID is required and cannot be empty"
+    ),
+  NEXT_PUBLIC_KINGDOMLY_COMMUNITY_MANIFEST_ID: z
+    .string()
+    .min(
+      1,
+      "NEXT_PUBLIC_KINGDOMLY_COMMUNITY_MANIFEST_ID is required and cannot be empty"
+    ),
+  NEXT_PUBLIC_THJ_COMMUNITY_MANIFEST_ID: z
+    .string()
+    .min(
+      1,
+      "NEXT_PUBLIC_THJ_COMMUNITY_MANIFEST_ID is required and cannot be empty"
+    ),
 });
 
 /**
