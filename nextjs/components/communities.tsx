@@ -19,17 +19,16 @@ const LockedModal: FC<LockedModalProps> = ({ isVisible }) => {
   return (
     <>
       <div className="backdrop-filter backdrop-blur-md bg-black absolute inset-0 bg-opacity-60 z-20"></div>
-      <div className="rounded-xl border-[#0F0F0F] border flex-col gap-8 bg-[#111111CC] bg-opacity-80 backdrop-blur-md px-10 w-[350px] h-[450px] md:size-[473px] absolute inset-0 flex items-center justify-center z-30 m-auto">
+      <div className="rounded-xl border-[#0F0F0F] border flex-col gap-6 bg-[#111111CC] bg-opacity-80 backdrop-blur-md px-10 w-[350px] h-[450px] md:size-[440px] absolute inset-0 flex items-center justify-center z-30 m-auto">
         <div className="size-20 grid place-items-center text-[#515151] bg-[#111111] rounded-full">
           <LockIcon className="mx-auto" />
         </div>
-        <Heading level="h3" className="text-center">
-          Mint 1 NFT to unlock the community
-        </Heading>
-        <p className="text-center">
-          Mint your Irys + Bera NFT on Berachain. Join a vibrant community.
-        </p>
-        <div className="px-4 w-full">
+        <h3 className="text-center text-2xl font-bold leading-relaxed">
+          Mint the Irys x Berachain NFT to Unlock Exclusive Community NFT
+          Designs and <br />
+          Be Part of the Lore.
+        </h3>
+        <div className="px-4 w-full mt-3">
           <MintNftNowButton />
         </div>
       </div>
@@ -55,12 +54,12 @@ const Communities: FC<Props> = () => {
         isVisible={isDisconnected || !(stats?.tokenIds?.length ?? 0 > 0)}
       />
       <div className="container">
-        <Heading level="h2" className="text-center">
-          Community NFT
-        </Heading>
-        <p className="mt-3 text-customGray text-center text-[#949494]">
+        <h2 className="text-3xl md:text-4xl xl:text-5xl font-bold text-center">
+          Mint Your Berachain x Irys Ecosystem NFT
+        </h2>
+        {/* <p className="mt-3 text-customGray text-center text-[#949494]">
           Mint your Irys + Bera NFT on Berachain. Join a vibrant community.
-        </p>
+        </p> */}
         <div
           className={clsx(
             "grid grid-cols-10 w-full gap-5 mt-20",

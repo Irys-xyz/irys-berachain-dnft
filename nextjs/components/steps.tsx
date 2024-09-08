@@ -21,9 +21,9 @@ const NETWORK_PARAMS = {
 
 const STEPS = [
   {
-    title: "Add Berachain Testnet",
+    title: "Connect to Berachain Testnet",
     paragraph:
-      "First, add the Berachain bArtio Testnet to your EVM wallet. This ensures you're connected to the right network.",
+      "First, add the Berachain bArtio Testnet to your EVM wallet. This makes sure you're connected to the right network.",
     btn: {
       title: "Add Testnet",
       onClick: async (toast: (arg0: { title: string }) => void) => {
@@ -45,9 +45,9 @@ const STEPS = [
     },
   },
   {
-    title: "Claim Free $BERA Tokens",
+    title: "Claim Your Free $BERA Tokens",
     paragraph:
-      "You'll need a small amount of $BERA to cover the gas fees. Claim your free tokens from the faucet.",
+      "You'll need $BERA to cover gas fees. Head to the faucet and claim your tokens—it’s quick and free.",
     btn: {
       title: "Bera Faucet",
       onClick: () =>
@@ -57,7 +57,7 @@ const STEPS = [
   {
     title: "Mint Your Irys + Bera NFT",
     paragraph:
-      "Now, you're ready to mint! Click the button below to mint your unique Irys + Bera NFT. Remember, minting is free; just cover the gas fees.",
+      "You're ready! Click the button below to mint your exclusive NFT. Minting is free; just cover the gas fees. ",
   },
 ];
 

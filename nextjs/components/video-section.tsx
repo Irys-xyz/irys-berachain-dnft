@@ -29,6 +29,7 @@ const VideoSection: FC = (): JSX.Element => {
           className="rounded-xl"
           controls
           playing
+          muted
           width="100%"
           height={"auto"}
           onReady={handleReady}

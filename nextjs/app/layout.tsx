@@ -37,8 +37,9 @@ const satoshi = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Irys the Bera",
-  description: "There's a new Bera in town and her name is Irys.",
+  title: "Mint Your Dynamic Irys + Berachain NFT",
+  description:
+    "Back the ecosystem project you believe in—your NFT evolves with your $BGT, reflecting your growing commitment.",
 };
 
 export default function RootLayout({

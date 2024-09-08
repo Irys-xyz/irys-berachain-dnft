@@ -146,7 +146,8 @@ export async function POST(req: NextRequest) {
         return NextResponse.json(
           {
             ok: false,
-            message: "You're already at the top, anon.",
+            message:
+              "You've reached the final level! Your NFT is now fully evolved.",
           },
           {
             status: 400,

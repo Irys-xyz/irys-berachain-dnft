@@ -75,7 +75,7 @@ const MintNftNowButton = ({ className, ...props }: Props) => {
       ) : success ? (
         props.customSuccessText ?? "CHECK MY WALLET"
       ) : (
-        props?.customText ?? "MINT NFT NOW"
+        props?.customText ?? "Mint Berachain x Irys NFT Now"
       )}
     </Button>
   );

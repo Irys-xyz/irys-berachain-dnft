@@ -14,7 +14,7 @@ const getHeadingClasses = (level: HeadingLevel): string => {
     case "h1":
       return "text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight";
     case "h2":
-      return "text-6xl font-bold";
+      return "text-5xl md:text-6xl font-bold";
     case "h3":
       return "text-4xl font-bold";
     case "h4":

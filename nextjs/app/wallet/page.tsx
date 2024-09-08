@@ -6,49 +6,19 @@ import { useAccount } from "wagmi";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
-import {
-  fetchStats,
-  fetchMetadata,
-  updateMetadata,
-  handleMint,
-} from "@/lib/custom-fetchs";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { fetchStats, fetchMetadata, updateMetadata } from "@/lib/custom-fetchs";
 import SpinnerIcon from "@/components/svg/spinner-icon";
 import { useState } from "react";
 import { useToast } from "@/components/hooks/use-toast";
 import ErrorDialog from "@/components/error-dialog";
-import extractReason from "@/utils/evm-error-reason";
 import NftLevelMobile from "@/components/nft-level/nft-level-mobile";
+import { METADATA_UPDATED } from "@/utils/constants";
+import MintNftNowButton from "@/components/mint-nft-now-button";
 
 const Wallet = () => {
   const { address, isConnected } = useAccount();
-  const { openConnectModal } = useConnectModal();
-  const [loading, setLoading] = useState(false);
+
   const { toast } = useToast();
-
-  const handleMintNftNow = async () => {
-    setLoading(true);
-    if (!isConnected) {
-      openConnectModal?.();
-    } else {
-      const res = await handleMint({
-        mintFunctionName: "mintMainNFT",
-      });
-
-      if (res.ok === false) {
-        toast({
-          title: extractReason(res.error) ?? "Error minting NFT",
-        });
-      }
-
-      if (res.ok) {
-        ["stats", "nftData", "communityNftData"].forEach((key) => {
-          queryClient.invalidateQueries({ queryKey: [key] });
-        });
-      }
-    }
-    setLoading(false);
-  };
 
   const {
     data: stats,
@@ -94,8 +64,7 @@ const Wallet = () => {
         queryClient.invalidateQueries({ queryKey: [key] });
       });
       toast({
-        title:
-          "Metadata updated successfully, wait a few seconds for the changes to reflect.",
+        title: METADATA_UPDATED,
       });
     },
     onError: (error: Error) => {
@@ -118,18 +87,14 @@ const Wallet = () => {
         />
         <div className="flex items-center justify-center flex-col gap-5 pt-32">
           <h1 className="text-6xl font-bold text-white text-center max-w-3xl tracking-tight">
-            You don&apos;t have a NFT yet
+            You don&apos;t have an NFT.
           </h1>
           <p className="text-[#949494] text-center">
-            Mint your Irys + Bera NFT on Berachain. Join a vibrant community.
+            No NFT yet? Don&apos;t miss out—mint your limited-time Irys +
+            Berachain NFT now.
           </p>
           <div className="mt-24 z-50">
-            <Button
-              className="font-bold uppercase px-10"
-              onClick={handleMintNftNow}
-            >
-              {loading ? <SpinnerIcon /> : "Mint your nft now"}
-            </Button>
+            <MintNftNowButton />
           </div>
           <img
             src="/bg-wallet.png"
