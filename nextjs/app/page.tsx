@@ -11,7 +11,7 @@ const Home = () => {
         <h1 className="text-center leading-snug max-w-7xl text-4xl md:text-6xl lg:text-6xl font-bold tracking-tight">
           Mint Your Dynamic NFT—Support Your Community, Be Part of the Lore.
         </h1>
-        <p className="!text-center mt-10 text-[#949494] max-w-2xl mx-auto">
+        <p className="!text-center mt-10 text-[#949494] max-w-4xl mx-auto text-lg">
           Back the ecosystem project you believe in—your NFT evolves with your
           $BGT, reflecting your growing commitment. Unlock exclusive, hand-drawn
           designs with each evolution. PS. They double as phone lock screens.
