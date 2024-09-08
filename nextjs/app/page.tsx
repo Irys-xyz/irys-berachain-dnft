@@ -4,6 +4,7 @@ import Heading from "@/components/heading";
 import FlagIcon from "@/components/svg/flag-icon";
 import MintNftNowButton from "@/components/mint-nft-now-button";
 import { Metadata } from "next";
+import VideoSection from "@/components/video-section";
 
 export const metadata: Metadata = {
   title: "Irys the Bera",
@@ -45,10 +46,11 @@ const Home = () => {
             <MintNftNowButton />
           </div>
         </div>
-        <div className="col-span-12 md:col-span-6 mt-6 w-full aspect-video">
-          <video className="rounded-xl" controls autoPlay muted>
+        <div className="col-span-12 md:col-span-6 mt-6 w-full">
+          <VideoSection />
+          {/* <video className="rounded-xl" controls autoPlay muted>
             <source src="/nft-collab.mp4" type="video/mp4" />
-          </video>
+          </video> */}
         </div>
       </section>
       <section className="mt-4 md:mt-14 container">

@@ -1,15 +1,41 @@
-import { FC } from "react";
+"use client";
+import { FC, useState } from "react";
+import ReactPlayer from "react-player";
+import BeeIcon from "./svg/bee-icon";
 
 /**
  * NFT Video Component
  * @returns {JSX.Element}
  */
 const VideoSection: FC = () => {
+  const [isLoading, setIsLoading] = useState(true);
+
+  const handleReady = () => {
+    setIsLoading(false);
+  };
+
   return (
-    <div className="col-span-12 md:col-span-6 mt-6 w-full aspect-video">
-      <video className="rounded-xl" controls autoPlay>
-        <source src="/nft-collab.mp4" type="video/mp4" />
-      </video>
+    <div className="col-span-12 md:col-span-6 mt-6 w-full relative h-full min-h-[389px] xl:h-[810px] rounded-xl overflow-hidden">
+      {isLoading && (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="bg-[#451D07] size-14 p-3 grid place-items-center rounded-full">
+            <BeeIcon className="animate-spin" />
+          </div>
+        </div>
+      )}
+      <div className="overflow-hidden rounded-xl">
+        <ReactPlayer
+          url="/nft-collab.mp4"
+          className="rounded-xl"
+          controls
+          playing
+          width="100%"
+          height={"auto"}
+          // height="100%"
+          onReady={handleReady}
+          style={{ opacity: isLoading ? 0 : 1 }}
+        />
+      </div>
     </div>
   );
 };
