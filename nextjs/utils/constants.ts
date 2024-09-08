@@ -6,7 +6,7 @@ const COMMUNITIES = [
     image: "/communities/beramarket.png",
     value: "beramarket",
     description:
-      "Next gen futuristic high tech smooth brain ready shit for shit trading Bera liquidity fulfilling NFT market place for apes Degens and the like. In Closed Beta.",
+      "NFT market place for apes Degens and the like. In Closed Beta.",
     manifest: env.NEXT_PUBLIC_BERAMARKET_COMMUNITY_MANIFEST_ID,
   },
   {
@@ -21,8 +21,7 @@ const COMMUNITIES = [
     title: "The Honey Jar",
     image: "/communities/thehoneyjar.png",
     value: "the-honey-jar",
-    description:
-      "THJ is Berachain-native community venture studio. We're the creators of Honeycomb, a perks aggregator for Bera eco projects.",
+    description: "A Berachain-native community venture studio.",
     manifest: env.NEXT_PUBLIC_THJ_COMMUNITY_MANIFEST_ID,
   },
   {

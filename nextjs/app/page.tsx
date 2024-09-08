@@ -8,7 +8,7 @@ const Home = () => {
   return (
     <main className="flex flex-col items-center justify-center pb-16 pt-8 text-white">
       <section className="p-8 md:p-12 lg:p-16 text-left">
-        <h1 className="text-center leading-snug max-w-7xl text-4xl md:text-6xl lg:text-6xl font-bold tracking-tight">
+        <h1 className="text-center max-w-7xl text-4xl md:text-6xl lg:text-6xl font-bold tracking-tight">
           Mint Your Dynamic NFT—Support Your Community, Be Part of the Lore.
         </h1>
         <p className="!text-center mt-10 text-[#949494] max-w-4xl mx-auto text-lg">
