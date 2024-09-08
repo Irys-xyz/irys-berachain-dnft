@@ -1,5 +1,4 @@
 "use client";
-import Heading from "./heading";
 import LockIcon from "./svg/lock-icon";
 import { FC } from "react";
 import MintNftNowButton from "./mint-nft-now-button";
