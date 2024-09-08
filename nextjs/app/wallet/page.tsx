@@ -18,6 +18,7 @@ import { useState } from "react";
 import { useToast } from "@/components/hooks/use-toast";
 import ErrorDialog from "@/components/error-dialog";
 import extractReason from "@/components/utils/evm-error-reason";
+import NftLevelMobile from "@/components/nft-level/nft-level-mobile";
 
 const Wallet = () => {
   const { address, isConnected } = useAccount();
@@ -74,6 +75,8 @@ const Wallet = () => {
     refetchInterval: 1000,
     enabled: !!stats?.tokenIds.length,
   });
+
+  const [viewing, setViewing] = useState(+nftData?.currentLevel || 1);
 
   const { data: communityNftData } = useQuery({
     queryKey: ["communityNftData", address],
@@ -193,8 +196,8 @@ const Wallet = () => {
         className="absolute inset-0 w-full h-full opacity-10 -mt-2 -z-10"
       />
 
-      <div className="flex items-center justify-center flex-col gap-5 pt-10">
-        <div className="bg-[#451D07] size-14 grid place-items-center rounded-full">
+      <div className="hidden md:flex items-center justify-center flex-col gap-5 pt-10">
+        <div className="bg-[#451D07] p-3 size-14 grid place-items-center rounded-full">
           <BeeIcon className="" />
         </div>
         <p className="text-center text-[#949494]">Your BTG Balance</p>
@@ -202,7 +205,29 @@ const Wallet = () => {
           {stats?.currentBGTBalance}
         </h1>
       </div>
+      <div className="border-b border-white/10 md:hidden flex items-start justify-center flex-col gap-5 py-10 px-5 bg-black">
+        <div className="flex items-center gap-2">
+          <div className="bg-[#451D07] p-1 size-6 grid place-items-center rounded-full">
+            <BeeIcon className="" />
+          </div>
+          <p className="text-center text-[#949494]">Your BTG Balance</p>
+        </div>
+        <h1 className="text-3xl font-bold tracking-tight">
+          {stats?.currentBGTBalance.toFixed(12)}
+        </h1>
+      </div>
       <section className="mt-14">
+        <NftLevelMobile
+          viewing={viewing}
+          setViewing={setViewing}
+          balance={stats?.currentBGTBalance ?? 0}
+          currentLevel={+nftData?.currentLevel || 0}
+          steps={[
+            stats?.baseBGTBalance ?? 0,
+            stats?.level2Threshold ?? 0,
+            stats?.level3Threshold ?? 0,
+          ]}
+        />
         <NftLevel
           balance={stats?.currentBGTBalance ?? 0}
           currentLevel={+nftData?.currentLevel || 0}
@@ -215,6 +240,18 @@ const Wallet = () => {
       </section>
       {communityNftData && (
         <section className="-mt-10">
+          <NftLevelMobile
+            viewing={viewing}
+            setViewing={setViewing}
+            communityId={communityNftData?.communityId}
+            balance={stats?.currentBGTBalance ?? 0}
+            currentLevel={+communityNftData?.currentLevel || 0}
+            steps={[
+              stats?.baseBGTBalance ?? 0,
+              stats?.level2Threshold ?? 0,
+              stats?.level3Threshold ?? 0,
+            ]}
+          />
           <NftLevel
             communityId={communityNftData?.communityId}
             balance={stats?.currentBGTBalance ?? 0}
@@ -243,7 +280,7 @@ const Wallet = () => {
         </div>
       </div>
       <div className="my-20 mx-auto flex items-center justify-center flex-col max-w-4xl pt-10 border-t border-[#1C1C1C]">
-        <p className="text-lg text-[#949494] text-center max-w-3xl">
+        <p className="text-lg text-[#949494] text-center max-w-3xl px-6 md:px-0">
           $BGT cannot be bought and isn’t transferable. The only way to earn
           $BGT is by providing liquidity and then staking the LP token into a
           whitelisted gauge.

@@ -43,7 +43,7 @@ const ErrorDialog = ({
               updateMetadataMutation.error?.message ===
                 ERROR_UPDATE_METADATA_24H
                 ? "bg-[#3E91DD] size-14 p-3"
-                : "bg-[#451D07] size-14"
+                : "bg-[#451D07] size-14 p-2"
             )}
           >
             {updateMetadataMutation.error?.message ===

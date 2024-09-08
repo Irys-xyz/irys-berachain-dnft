@@ -20,7 +20,7 @@ const TopNav: FC = (): JSX.Element => {
   const { disconnect } = useDisconnect();
 
   return (
-    <nav className="bg-background py-3 px-8 flex items-center justify-between bg-black border-b border-[#1C1C1C]">
+    <nav className="bg-background py-3 px-6 md:px-8 flex items-center justify-between bg-black border-b border-[#1C1C1C]">
       <Link href={"/"}>
         <div className="flex-grow flex justify-start">
           <IrysInteractiveEye />

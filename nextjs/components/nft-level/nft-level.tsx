@@ -64,7 +64,7 @@ const NftLevel = ({ balance, steps, currentLevel, communityId }: Props) => {
   const BASE_RATIO = 0.461;
 
   return (
-    <div className="flex flex-col gap-14 relative items-center justify-center">
+    <div className="hidden md:flex flex-col gap-14 relative items-center justify-center px-4 lg:px-0">
       <div className="flex items-center justify-center relative">
         {!communityId &&
           steps?.map((step, index) => (

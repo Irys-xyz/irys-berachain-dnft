@@ -125,6 +125,7 @@ export async function POST(req: NextRequest) {
       const currentMetadata = await metadataResponse.json();
 
       const currentLevel = parseInt(currentMetadata.currentLevel, 10);
+      // const currentLevel = parseInt(0);
       console.log(`currentLevel=${currentLevel}`);
 
       if (currentLevel >= 3) {
