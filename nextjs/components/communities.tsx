@@ -23,10 +23,12 @@ const LockedModal: FC<LockedModalProps> = ({ isVisible }) => {
           <LockIcon className="mx-auto" />
         </div>
         <h3 className="text-center text-2xl font-bold leading-relaxed">
-          Mint the Irys x Berachain NFT to Unlock Exclusive Community NFT
-          Designs and <br />
-          Be Part of the Lore.
+          Mint the Irys x Berachain NFT
         </h3>
+        <p className="text-center text-[#D1D1D1]">
+          Unlock Exclusive Community NFT Designs and <br />
+          Be Part of the Lore.
+        </p>
         <div className="px-4 w-full mt-3">
           <MintNftNowButton />
         </div>

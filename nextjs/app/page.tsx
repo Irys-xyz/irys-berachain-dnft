@@ -7,7 +7,7 @@ import VideoSection from "@/components/video-section";
 const Home = () => {
   return (
     <main className="flex flex-col items-center justify-center pb-16 pt-8 text-white">
-      <section className="p-8 md:p-12 lg:p-16 text-left">
+      <section className="p-8 md:p-12 lg:p-28 text-left">
         <h1 className="text-center max-w-7xl text-4xl md:text-6xl lg:text-6xl font-bold tracking-tight">
           Mint Your Dynamic NFT—Support Your Community, Be Part of the Lore.
         </h1>
