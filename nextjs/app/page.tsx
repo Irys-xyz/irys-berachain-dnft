@@ -3,6 +3,12 @@ import Communities from "@/components/communities";
 import Heading from "@/components/heading";
 import FlagIcon from "@/components/svg/flag-icon";
 import MintNftNowButton from "@/components/mint-nft-now-button";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Irys the Bera",
+  description: "There's a new Bera in town and her name is Irys.",
+};
 
 const Home = () => {
   return (
