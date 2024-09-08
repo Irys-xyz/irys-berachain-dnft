@@ -61,6 +61,8 @@ export async function POST(req: NextRequest) {
         process.env.COOKIE_ENCRYPT_KEY as string
       );
       cookieStore.set("ua", encryptedDate, {
+        // 24 hours
+        expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
         httpOnly: true,
       });
       return NextResponse.json(
@@ -219,6 +221,7 @@ export async function POST(req: NextRequest) {
     );
 
     cookieStore.set("ua", encryptedDate, {
+      expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
       httpOnly: true,
     });
 
