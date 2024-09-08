@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useAccount } from "wagmi";
 import { fetchStats } from "./utils/custom-fetchs";
 import { COMMUNITIES } from "./utils/constants";
+import clsx from "clsx";
 
 type LockedModalProps = {
   isVisible: boolean;
@@ -60,7 +61,13 @@ const Communities: FC<Props> = () => {
         <p className="mt-3 text-customGray text-center text-[#949494]">
           Mint your Irys + Bera NFT on Berachain. Join a vibrant community.
         </p>
-        <div className="grid grid-cols-10 w-full gap-5 mt-20 ">
+        <div
+          className={clsx(
+            "grid grid-cols-10 w-full gap-5 mt-20",
+            (isDisconnected || !(stats?.tokenIds?.length ?? 0 > 0)) &&
+              "max-h-56 md:max-h-max overflow-hidden"
+          )}
+        >
           {COMMUNITIES.map((community, index) => (
             <div
               key={index}
