@@ -152,7 +152,7 @@ const Wallet = () => {
           className="absolute inset-0 w-full h-full opacity-10 -mt-2 -z-10"
         />
         <div className="flex items-center justify-center flex-col gap-5 pt-10">
-          <div className="bg-[#451D07] size-14 grid place-items-center rounded-full">
+          <div className="bg-[#451D07] size-14 p-2 grid place-items-center rounded-full">
             <BeeIcon className="animate-spin" />
           </div>
           <p className="text-center text-[#949494]">
