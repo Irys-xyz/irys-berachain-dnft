@@ -4,7 +4,7 @@ import { berachainTestnetbArtio } from "viem/chains";
 import {} from "viem/chains";
 import { env } from "./env";
 import publicClient from "./public-client";
-import { COMMUNITIES } from "./constants";
+import { COMMUNITIES, IRYS_GATEWAY, IRYS_TESTNET_GATEWAY } from "./constants";
 
 /**
  * Fetches the metadata for a given tokenId.
@@ -24,6 +24,25 @@ const fetchMetadata = async (tokenId: number) => {
     args: [tokenId],
   })) as bigint;
 
+  if (
+    result.toString() === `${IRYS_GATEWAY}/mutable/NOT_SET` ||
+    result.toString() === `${IRYS_TESTNET_GATEWAY}/mutable/NOT_SET`
+  ) {
+    console.log("metadata not initialized", result);
+    await fetch("/api/initialize-metadata", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        tokenId,
+      }),
+    });
+
+    console.log("metadata initialized", result);
+
+    return fetchMetadata(tokenId);
+  }
   const metadataResponse = await fetch(result.toString());
   if (!metadataResponse.ok) {
     throw new Error("Failed to fetch metadata");
@@ -32,20 +51,19 @@ const fetchMetadata = async (tokenId: number) => {
 };
 
 /**
- * Updates the metadata for a given tokenId.
- * @param {number} tokenId - The tokenId to update metadata for.
+ * Updates the metadatas for a given wallet Address.
+ * @param {string} walletAddress - The wallet address to update metadata for.
  * @throws {Error} - If the metadata update fails.
  * @example
- * updateMetadata(1);
- * updateMetadata(2);
+ * updateMetadata({ walletAddress: "0x0..."});
  */
-const updateMetadata = async (tokenId: number) => {
+const updateMetadata = async ({ walletAddress }: { walletAddress: string }) => {
   const response = await fetch("/api/update-metadata", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ tokenId }),
+    body: JSON.stringify({ walletAddress }),
   });
 
   const result = await response.json();
@@ -74,6 +92,7 @@ const fetchStats = async (address: string) => {
 
   // Calculate thresholds for level 2 and level 3
   const level2Percent = Number(env.NEXT_PUBLIC_PERCENT_TO_LEVEL_2);
+
   const level3Percent = Number(env.NEXT_PUBLIC_PERCENT_TO_LEVEL_3);
 
   const level2Threshold =
@@ -108,12 +127,16 @@ const fetchStats = async (address: string) => {
     args: [address],
   })) as bigint[];
 
+  const tokensWithNoDuplicates = Array.from(new Set(tokens)).map((token) =>
+    Number(token)
+  );
+
   return {
     baseBGTBalance: baseBGTBalanceNumber,
     currentBGTBalance: Number(currentBGTBalance),
     level2Threshold,
     level3Threshold,
-    tokenIds: tokens.map((id) => Number(id)),
+    tokenIds: tokensWithNoDuplicates,
   };
 };
 

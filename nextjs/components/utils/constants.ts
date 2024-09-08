@@ -2,9 +2,9 @@ import { env } from "./env";
 
 const COMMUNITIES = [
   {
-    title: "Berachain",
-    image: "/communities/bera.png",
-    value: "berachain",
+    title: "Beramarket",
+    image: "/communities/beramarket.png",
+    value: "beramarket",
     description: "Short description goes here this is the second line.",
     manifest: env.NEXT_PUBLIC_BERAMARKET_COMMUNITY_MANIFEST_ID,
   },
@@ -38,4 +38,21 @@ const COMMUNITIES = [
   },
 ] as const;
 
-export { COMMUNITIES };
+const IRYS_GATEWAY = "https://gateway.irys.xyz";
+const IRYS_TESTNET_GATEWAY = "https://testnet-gateway.irys.xyz";
+const ERROR_UPDATE_METADATA_24H =
+  "You can only try updating NFT metadata once per day. Try again tomorrow.";
+
+const LEVEL_PERCENT_MAP: Record<number, bigint> = {
+  0: BigInt(0),
+  1: BigInt(parseInt(env.NEXT_PUBLIC_PERCENT_TO_LEVEL_2 as string, 10)),
+  2: BigInt(parseInt(env.NEXT_PUBLIC_PERCENT_TO_LEVEL_3 as string, 10)),
+};
+
+export {
+  COMMUNITIES,
+  IRYS_GATEWAY,
+  IRYS_TESTNET_GATEWAY,
+  ERROR_UPDATE_METADATA_24H,
+  LEVEL_PERCENT_MAP,
+};

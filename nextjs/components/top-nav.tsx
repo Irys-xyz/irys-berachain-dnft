@@ -8,6 +8,7 @@ import { useAccount, useDisconnect } from "wagmi";
 import WalletIcon from "./svg/wallet-icon";
 import LogoutIcon from "./svg/logout-icon";
 import { FC } from "react";
+import Jazzicon, { jsNumberForAddress } from "react-jazzicon";
 
 /**
  * TopNav component
@@ -15,7 +16,7 @@ import { FC } from "react";
  */
 const TopNav: FC = (): JSX.Element => {
   const { openConnectModal } = useConnectModal();
-  const { isConnected } = useAccount();
+  const { isConnected, address } = useAccount();
   const { disconnect } = useDisconnect();
 
   return (
@@ -41,11 +42,21 @@ const TopNav: FC = (): JSX.Element => {
       {isConnected && (
         <>
           <div className="flex-grow flex justify-end items-center gap-4">
-            <Link href={"/wallet"}>
-              <Button className="flex gap-2" variant={"action"}>
+            <Link
+              href={"/wallet"}
+              className="hover:bg-white/10 transition-all text-[#949494] flex itc justify-center gap-2 bg-[#111111] px-3 py-2 rounded-lg border border-[#161616]"
+            >
+              <Jazzicon
+                diameter={26}
+                seed={jsNumberForAddress(address ?? "0")}
+              />
+              <p className="font-bold">
+                {address?.slice(0, 6)}...{address?.slice(-4)}
+              </p>
+              {/* <Button className="flex gap-2" variant={"action"}>
                 <WalletIcon />
                 My NFT
-              </Button>
+              </Button> */}
             </Link>
             <button onClick={() => disconnect()}>
               <LogoutIcon className="text-[#515151]" />

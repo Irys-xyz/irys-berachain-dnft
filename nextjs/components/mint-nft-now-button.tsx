@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import SpinnerIcon from "@/components/svg/spinner-icon";
 import { useRouter } from "next/navigation";
 import { COMMUNITIES } from "./utils/constants";
+import { useToast } from "./hooks/use-toast";
+import extractReason from "./utils/evm-error-reason";
 
 interface Props extends React.HTMLAttributes<HTMLButtonElement> {
   customText?: string;
@@ -21,6 +23,7 @@ const MintNftNowButton = ({ className, ...props }: Props) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [success, setSuccess] = useState(false);
   const navigation = useRouter();
+  const { toast } = useToast();
 
   const handleMintNftNow = async () => {
     if (success) {
@@ -44,7 +47,11 @@ const MintNftNowButton = ({ className, ...props }: Props) => {
               mintFunctionName: "mintMainNFT",
             }
       );
-      if (response.ok) {
+      if (!response.ok) {
+        toast({
+          title: extractReason(response.error) ?? "Error minting NFT",
+        });
+      } else {
         setSuccess(true);
       }
     }

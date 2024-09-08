@@ -13,67 +13,88 @@ import {
   handleMint,
 } from "../../components/utils/custom-fetchs";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-} from "@/components/ui/dialog";
-import { DialogClose } from "@radix-ui/react-dialog";
 import SpinnerIcon from "@/components/svg/spinner-icon";
+import { useState } from "react";
+import { useToast } from "@/components/hooks/use-toast";
+import ErrorDialog from "@/components/error-dialog";
+import extractReason from "@/components/utils/evm-error-reason";
 
 const Wallet = () => {
   const { address, isConnected } = useAccount();
   const { openConnectModal } = useConnectModal();
+  const [loading, setLoading] = useState(false);
+  const { toast } = useToast();
 
-  const handleMintNftNow = () => {
+  const handleMintNftNow = async () => {
+    setLoading(true);
     if (!isConnected) {
       openConnectModal?.();
     } else {
-      handleMint({
+      const res = await handleMint({
         mintFunctionName: "mintMainNFT",
       });
+
+      if (res.ok === false) {
+        toast({
+          title: extractReason(res.error) ?? "Error minting NFT",
+        });
+      }
+
+      if (res.ok) {
+        ["stats", "nftData", "communityNftData"].forEach((key) => {
+          queryClient.invalidateQueries({ queryKey: [key] });
+        });
+      }
     }
+    setLoading(false);
   };
 
   const {
     data: stats,
-    error,
-    isLoading,
+    error: statsError,
+    isLoading: isStatsLoading,
   } = useQuery({
-    queryKey: ["stats"],
+    queryKey: ["stats", address],
     queryFn: () => fetchStats(address as string),
     enabled: !!address && isConnected,
   });
-
-  console.log("stats", stats);
+  console.log("🚀 ~ Wal ~ stats:", stats);
 
   const queryClient = useQueryClient();
 
   // Query to fetch NFT metadata
   const {
     data: nftData,
-    isLoading: nftLoading,
-    isFetched: alreadyFetchedNftData,
     error: nftError,
+    isLoading: isNftLoading,
+    isFetched: isNftFetched,
   } = useQuery({
-    queryKey: ["nftData"],
-    queryFn: () =>
-      fetchMetadata(stats?.tokenIds[2] || (stats?.tokenIds[0] as any)),
+    queryKey: ["nftData", address],
+    queryFn: () => stats?.tokenIds.length && fetchMetadata(stats?.tokenIds[0]),
     refetchInterval: 1000,
     enabled: !!stats?.tokenIds.length,
   });
 
+  const { data: communityNftData } = useQuery({
+    queryKey: ["communityNftData", address],
+    queryFn: () => stats?.tokenIds.length && fetchMetadata(stats?.tokenIds[1]),
+    refetchInterval: 1000,
+    enabled: !!stats?.tokenIds?.length && !!stats?.tokenIds[1],
+  });
   // Mutation to update metadata
   const updateMetadataMutation = useMutation({
     mutationFn: () =>
-      updateMetadata(stats?.tokenIds[2] || stats?.tokenIds[0] || 0),
-    // updateMetadata(26),
+      updateMetadata({
+        walletAddress: address as string,
+      }),
     onSuccess: () => {
-      console.log("Metadata updated successfully");
-      // Invalidate and refetch the NFT data query
-      queryClient.invalidateQueries({ queryKey: ["stats"] });
-      queryClient.invalidateQueries({ queryKey: ["nftData"] });
+      ["stats", "nftData", "communityNftData"].forEach((key) => {
+        queryClient.invalidateQueries({ queryKey: [key] });
+      });
+      toast({
+        title:
+          "Metadata updated successfully, wait a few seconds for the changes to reflect.",
+      });
     },
     onError: (error: Error) => {
       console.error("Error updating metadata:", error.message);
@@ -83,8 +104,8 @@ const Wallet = () => {
   if (
     !isConnected ||
     !address ||
-    (!alreadyFetchedNftData && !nftData) ||
-    (alreadyFetchedNftData && !stats?.tokenIds.length)
+    (isNftFetched && !nftData) ||
+    (!isNftFetched && !stats?.tokenIds.length)
   ) {
     return (
       <div className="relative px-8 md:px-0">
@@ -105,26 +126,26 @@ const Wallet = () => {
               className="font-bold uppercase px-10"
               onClick={handleMintNftNow}
             >
-              Mint your nft now
+              {loading ? <SpinnerIcon /> : "Mint your nft now"}
             </Button>
           </div>
-          <img src="/bg-wallet.png" className="w-full -mt-28" alt="bg-wallet" />
+          <img
+            src="/bg-wallet.png"
+            className="w-full -mt-28"
+            alt="background image"
+          />
         </div>
       </div>
     );
   }
 
-  if (
-    isLoading ||
-    !stats ||
-    nftLoading ||
-    (!alreadyFetchedNftData && !nftData)
-  ) {
+  if (isStatsLoading || isNftLoading) {
     return (
       <div className="relative">
         <div className="-z-10 -mt-60 absolute inset-0 size-96 bg-white/80 rounded-full transform -translate-x-1/2 -translate-y-1/2 left-1/2 blur-[200px]"></div>
         <img
           src="/bg.png"
+          alt="background image"
           className="absolute inset-0 w-full h-full opacity-10 -mt-2 -z-10"
         />
         <div className="flex items-center justify-center flex-col gap-5 pt-10">
@@ -132,19 +153,20 @@ const Wallet = () => {
             <BeeIcon className="animate-spin" />
           </div>
           <p className="text-center text-[#949494]">
-            {isLoading ? "Loading wallet..." : "Fetching NFT..."}
+            {isStatsLoading ? "Loading wallet..." : "Fetching NFT..."}
           </p>
         </div>
       </div>
     );
   }
 
-  if (error || nftError) {
+  if (statsError || nftError) {
     return (
       <div className="relative">
         <div className="-z-10 -mt-60 absolute inset-0 size-96 bg-white/80 rounded-full transform -translate-x-1/2 -translate-y-1/2 left-1/2 blur-[200px]"></div>
         <img
           src="/bg.png"
+          alt="background image"
           className="absolute inset-0 w-full h-full opacity-10 -mt-2 -z-10"
         />
         <div className="flex items-center justify-center flex-col gap-5 pt-10">
@@ -162,29 +184,11 @@ const Wallet = () => {
 
   return (
     <div className="relative">
-      <Dialog
-        open={!!updateMetadataMutation?.error}
-        onOpenChange={() => updateMetadataMutation.reset()}
-      >
-        <DialogContent className="bg-[#111111CC] border-none w-[418px] backdrop-blur-md">
-          <DialogHeader>
-            <DialogDescription className=" flex items-center justify-center flex-col">
-              <div className="bg-[#451D07] size-14 grid place-items-center rounded-full">
-                <BeeIcon className="" />
-              </div>
-              <p className="text-white font-bold tracking-tight text-lg text-center mt-5 mb-5">
-                {updateMetadataMutation.error?.message}
-              </p>
-            </DialogDescription>
-            <DialogClose>
-              <Button>OKAY</Button>
-            </DialogClose>
-          </DialogHeader>
-        </DialogContent>
-      </Dialog>
+      <ErrorDialog updateMetadataMutation={updateMetadataMutation} />
 
       <div className="-z-10 -mt-60 absolute inset-0 size-96 bg-white/80 rounded-full transform -translate-x-1/2 -translate-y-1/2 left-1/2 blur-[200px]"></div>
       <img
+        alt="background image"
         src="/bg.png"
         className="absolute inset-0 w-full h-full opacity-10 -mt-2 -z-10"
       />
@@ -195,20 +199,34 @@ const Wallet = () => {
         </div>
         <p className="text-center text-[#949494]">Your BTG Balance</p>
         <h1 className="text-5xl font-bold tracking-tight">
-          {stats.currentBGTBalance}
+          {stats?.currentBGTBalance}
         </h1>
       </div>
       <section className="mt-14">
         <NftLevel
-          balance={stats?.currentBGTBalance}
+          balance={stats?.currentBGTBalance ?? 0}
           currentLevel={+nftData?.currentLevel || 0}
           steps={[
-            stats?.baseBGTBalance,
-            stats?.level2Threshold,
-            stats?.level3Threshold,
+            stats?.baseBGTBalance ?? 0,
+            stats?.level2Threshold ?? 0,
+            stats?.level3Threshold ?? 0,
           ]}
         />
       </section>
+      {communityNftData && (
+        <section className="-mt-10">
+          <NftLevel
+            communityId={communityNftData?.communityId}
+            balance={stats?.currentBGTBalance ?? 0}
+            currentLevel={+communityNftData?.currentLevel || 0}
+            steps={[
+              stats?.baseBGTBalance ?? 0,
+              stats?.level2Threshold ?? 0,
+              stats?.level3Threshold ?? 0,
+            ]}
+          />
+        </section>
+      )}
       <div className="flex items-center justify-center mt-20">
         <div className="mx-auto">
           <Button

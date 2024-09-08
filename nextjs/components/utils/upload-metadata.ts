@@ -1,5 +1,3 @@
-
-import { env } from "./env";
 import { Uploader } from "@irys/upload";
 import { Bera } from "@irys/upload-ethereum";
 
@@ -26,14 +24,15 @@ async function uploadMetadata({
 }) {
   // Set up the Irys client
   const irysUploader = await Uploader(Bera).withWallet(process.env.PRIVATE_KEY);
-  console.log(`Connected to Irys from ${irysUploader.address}`);
 
   // Upload the new metadata to Irys
   const tags = [
     { name: "Content-Type", value: "application/json" },
     { name: "Root-TX", value: rootTx },
   ];
-  const receipt = await irysUploader.upload(JSON.stringify(newMetadata), { tags });
+  const receipt = await irysUploader.upload(JSON.stringify(newMetadata), {
+    tags,
+  });
 
   return receipt;
 }

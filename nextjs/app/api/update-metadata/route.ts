@@ -1,3 +1,5 @@
+import { cookies } from "next/headers";
+
 import { NextRequest, NextResponse } from "next/server";
 import IrysTheBeraNFTAbi from "@/app/contract/IrysTheBeraNFT-abi.json";
 import { env } from "@/components/utils/env";
@@ -5,37 +7,90 @@ import publicClient from "@/components/utils/public-client";
 import uploadMetadata, {
   NFTMetadata,
 } from "@/components/utils/upload-metadata";
-import { requestBodySchema } from "@/components/utils/request-body-schema";
+import {
+  COMMUNITIES,
+  ERROR_UPDATE_METADATA_24H,
+  LEVEL_PERCENT_MAP,
+} from "@/components/utils/constants";
+import {
+  aesGcmDecrypt,
+  aesGcmEncrypt,
+} from "@/components/utils/encrypt-decrypt";
+import { updateMetadataSchema } from "@/components/utils/route-params-validators";
 
 /**
  * POST /api/update-metadata
+ * BODY { "walletAddress": "0x..." }
  * Updates the metadata of an NFT
  */
 export async function POST(req: NextRequest) {
-  const { tokenId } = await req.json();
+  const cookieStore = cookies();
+  const { walletAddress } = await req.json();
 
   // Validate the request body
   try {
-    requestBodySchema.parse({ tokenId });
+    updateMetadataSchema.parse({ walletAddress });
   } catch (error: any) {
     return NextResponse.json({ error: error.errors }, { status: 400 });
   }
+
+  // At least 24 hours before trying again
+  const updatedAt = cookieStore.get("ua");
+  if (updatedAt && updatedAt.value) {
+    try {
+      const decryptedDate = await aesGcmDecrypt(
+        updatedAt.value,
+        process.env.COOKIE_ENCRYPT_KEY as string
+      );
+      const updatedAtDate = new Date(decryptedDate);
+      const now = new Date();
+      const diff = now.getTime() - updatedAtDate.getTime();
+      const diffHours = diff / (1000 * 60 * 60);
+      if (diffHours < 24) {
+        return NextResponse.json(
+          {
+            ok: false,
+            message: ERROR_UPDATE_METADATA_24H,
+          },
+          { status: 400 }
+        );
+      }
+    } catch (error) {
+      const encryptedDate = await aesGcmEncrypt(
+        new Date().toISOString(),
+        process.env.COOKIE_ENCRYPT_KEY as string
+      );
+      cookieStore.set("ua", encryptedDate, {
+        httpOnly: true,
+      });
+      return NextResponse.json(
+        {
+          ok: false,
+          message: "Error decrypting cookie. Did you tried to change it?",
+        },
+        { status: 400 }
+      );
+    }
+  }
+
   try {
-    // Retrieve the current owner of the NFT
-    const owner = await publicClient.readContract({
+    const userOwnedTokens = (await publicClient.readContract({
       address: env.NEXT_PUBLIC_IRYS_THE_BERA_NFT as `0x${string}`,
       abi: IrysTheBeraNFTAbi,
-      functionName: "ownerOf",
-      args: [BigInt(tokenId)],
-    });
-    console.log(`owner ${owner}`);
+      functionName: "getTokensOwnedBy",
+      args: [walletAddress],
+    })) as bigint[];
+
+    const tokens = Array.from(new Set(userOwnedTokens)).map((token) =>
+      Number(token)
+    );
 
     // Get the base BGT amount at the time of minting
     const baseBGTAmount = (await publicClient.readContract({
       address: env.NEXT_PUBLIC_IRYS_THE_BERA_NFT as `0x${string}`,
       abi: IrysTheBeraNFTAbi,
       functionName: "getBgtAtMintAmount",
-      args: [owner],
+      args: [walletAddress],
     })) as bigint;
     console.log(`baseBGTAmount ${baseBGTAmount.toString()}`);
 
@@ -52,85 +107,118 @@ export async function POST(req: NextRequest) {
         },
       ],
       functionName: "balanceOf",
-      args: [owner],
+      args: [walletAddress],
     })) as bigint;
     console.log(`currentBGTBalance ${currentBGTBalance.toString()}`);
 
-    // Retrieve the current token URI
-    const currentURI = (await publicClient.readContract({
-      address: env.NEXT_PUBLIC_IRYS_THE_BERA_NFT as `0x${string}`,
-      abi: IrysTheBeraNFTAbi,
-      functionName: "tokenURI",
-      args: [BigInt(tokenId)],
-    })) as string;
-    console.log(`currentURI ${currentURI}`);
+    for (let tokenId of tokens) {
+      // Retrieve the current token URI
+      const currentURI = (await publicClient.readContract({
+        address: env.NEXT_PUBLIC_IRYS_THE_BERA_NFT as `0x${string}`,
+        abi: IrysTheBeraNFTAbi,
+        functionName: "tokenURI",
+        args: [BigInt(tokenId)],
+      })) as string;
 
-    // Fetch the current metadata from Irys
-    const metadataResponse = await fetch(currentURI);
-    const metadata = await metadataResponse.json();
-    console.log(metadata);
+      // Fetch the current metadata from Irys
+      const metadataResponse = await fetch(currentURI);
+      const currentMetadata = await metadataResponse.json();
 
-    const currentLevel = parseInt(metadata.currentLevel, 10);
-    console.log(`currentLevel=${currentLevel}`);
+      const currentLevel = parseInt(currentMetadata.currentLevel, 10);
+      console.log(`currentLevel=${currentLevel}`);
 
-    if (currentLevel >= 3) {
-      return NextResponse.json(
-        {
-          ok: false,
-          message: "You're already at the top, anon.",
-        },
-        {
-          status: 400,
+      if (currentLevel >= 3) {
+        const otherTokensLevels = await Promise.all(
+          tokens
+            .filter((id) => id !== tokenId)
+            .map(async (id) => {
+              const uri = (await publicClient.readContract({
+                address: env.NEXT_PUBLIC_IRYS_THE_BERA_NFT as `0x${string}`,
+                abi: IrysTheBeraNFTAbi,
+                functionName: "tokenURI",
+                args: [BigInt(id)],
+              })) as string;
+
+              const response = await fetch(uri);
+              const metadata = await response.json();
+              return parseInt(metadata.currentLevel, 10);
+            })
+        );
+
+        if (otherTokensLevels.some((level) => level < 3)) {
+          console.log(
+            `Skipping token ${tokenId} because not all other tokens are at level 3.`
+          );
+          continue; // Skip to the next token
         }
-      );
+
+        return NextResponse.json(
+          {
+            ok: false,
+            message: "You're already at the top, anon.",
+          },
+          {
+            status: 400,
+          }
+        );
+      }
+
+      let percentIncreaseRequired =
+        LEVEL_PERCENT_MAP[currentLevel] ?? BigInt(0);
+
+      console.log(`percentIncreaseRequired=${percentIncreaseRequired}`);
+
+      // Calculate the required BGT balance using bigint arithmetic
+      // const requiredBGTBalance =
+      //   baseBGTAmount === 0n
+      //     ? percentIncreaseRequired
+      //     : baseBGTAmount + (baseBGTAmount * percentIncreaseRequired) / 100n;
+      // console.log(`requiredBGTBalance=${requiredBGTBalance}`);
+
+      // // WILLIAM when testing you can comment this out to just let the update happen.
+      // if (BigInt(currentBGTBalance) < requiredBGTBalance) {
+      //   console.log(`balance too low, not updating`);
+      //   return NextResponse.json({
+      //     ok: false,
+      //     message: "No updates until you earn more bgt, anon.",
+      //   });
+      // }
+
+      // Generate new metadata
+      const nftNames = env.NEXT_PUBLIC_NFT_NAMES?.split(",") || [];
+      const nextLevel = currentLevel + 1;
+
+      const baseUrl = env.NEXT_PUBLIC_IRYS_GATEWAY;
+      const manifestId = currentMetadata.communityId
+        ? COMMUNITIES.find((c) => c.value === currentMetadata.communityId)
+            ?.manifest
+        : env.NEXT_PUBLIC_BASE_NFT_MANIFEST_ID;
+
+      const previewImageUrl = `${baseUrl}/${manifestId}/${
+        nftNames[nextLevel - 1]
+      }`;
+
+      const newMetadata: NFTMetadata = {
+        ...currentMetadata,
+        image: previewImageUrl,
+        currentLevel: nextLevel.toString(),
+      };
+
+      await uploadMetadata({
+        newMetadata,
+        rootTx: currentURI.split("/").pop() as string,
+      });
+
+      console.log(`Updated metadata for token ${tokenId}`);
     }
 
-    let percentIncreaseRequired;
-    if (currentLevel === 1) {
-      percentIncreaseRequired = BigInt(
-        parseInt(env.NEXT_PUBLIC_PERCENT_TO_LEVEL_2 as string, 10)
-      );
-    } else {
-      percentIncreaseRequired = BigInt(
-        parseInt(env.NEXT_PUBLIC_PERCENT_TO_LEVEL_3 as string, 10)
-      );
-    }
-    console.log(`percentIncreaseRequired=${percentIncreaseRequired}`);
+    const encryptedDate = await aesGcmEncrypt(
+      new Date().toISOString(),
+      process.env.COOKIE_ENCRYPT_KEY as string
+    );
 
-    // Calculate the required BGT balance using bigint arithmetic
-    // const requiredBGTBalance =
-    //   baseBGTAmount === 0n
-    //     ? percentIncreaseRequired
-    //     : baseBGTAmount + (baseBGTAmount * percentIncreaseRequired) / 100n;
-    // console.log(`requiredBGTBalance=${requiredBGTBalance}`);
-
-    // // WILLIAM when testing you can comment this out to just let the update happen.
-    // if (BigInt(currentBGTBalance) < requiredBGTBalance) {
-    //   console.log(`balance too low, not updating`);
-    //   return NextResponse.json({
-    //     status: false,
-    //     message: "No updates until you earn more bgt, anon.",
-    //   });
-    // }
-
-    // Generate new metadata
-    const nftNames = env.NEXT_PUBLIC_NFT_NAMES?.split(",") || [];
-    const nextLevel = currentLevel + 1;
-    const previewImageUrl = `${env.NEXT_PUBLIC_IRYS_GATEWAY}/${
-      env.NEXT_PUBLIC_BASE_NFT_MANIFEST_ID
-    }/${nftNames[nextLevel - 1]}`;
-
-    const newMetadata: NFTMetadata = {
-      name: `NFT #${tokenId}`,
-      symbol: "IBERA",
-      description: `There's a new Bera in town and her name is Irys`,
-      image: previewImageUrl,
-      currentLevel: nextLevel.toString(),
-    };
-
-    await uploadMetadata({
-      newMetadata,
-      rootTx: currentURI.split("/").pop() as string,
+    cookieStore.set("ua", encryptedDate, {
+      httpOnly: true,
     });
 
     return NextResponse.json({ status: true });

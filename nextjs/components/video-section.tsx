@@ -1,5 +1,9 @@
 import { FC } from "react";
 
+/**
+ * NFT Video Component
+ * @returns {JSX.Element}
+ */
 const VideoSection: FC = () => {
   return (
     <div className="col-span-12 md:col-span-6 mt-6 w-full aspect-video">

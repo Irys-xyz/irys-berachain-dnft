@@ -2,7 +2,7 @@ import { z } from "zod";
 import { COMMUNITIES } from "./constants";
 
 // Define the request body schema validator
-const requestBodySchema = z.object({
+const initializeMetadataSchema = z.object({
   tokenId: z
     .number({
       message: "tokenId must be a number",
@@ -19,4 +19,13 @@ const requestBodySchema = z.object({
     .optional(),
 });
 
-export { requestBodySchema };
+const updateMetadataSchema = z.object({
+  walletAddress: z
+    .string({
+      message: "walletAddress must be a string",
+    })
+    .min(1, "walletAddress must be a non-empty string")
+    .min(40, "walletAddress must be at least 40 characters"),
+});
+
+export { initializeMetadataSchema, updateMetadataSchema };

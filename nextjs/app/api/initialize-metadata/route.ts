@@ -7,11 +7,12 @@ import IrysTheBeraNFTAbi from "@/app/contract/IrysTheBeraNFT-abi.json";
 import { privateKeyToAccount } from "viem/accounts";
 import { env } from "@/components/utils/env";
 import publicClient from "@/components/utils/public-client";
-import { requestBodySchema } from "@/components/utils/request-body-schema";
+import { initializeMetadataSchema } from "@/components/utils/route-params-validators";
 import { COMMUNITIES } from "@/components/utils/constants";
 
 /**
  * POST /api/initialize-metadata
+ * BODY { "tokenId": 0, "communityId": 0 }
  * Creates the initial metadata for a given tokenId.
  */
 export async function POST(req: NextRequest) {
@@ -19,7 +20,7 @@ export async function POST(req: NextRequest) {
 
   // Validate the request body
   try {
-    requestBodySchema.parse({ tokenId, communityId });
+    initializeMetadataSchema.parse({ tokenId, communityId });
   } catch (error: any) {
     return NextResponse.json({ error: error.errors }, { status: 400 });
   }
@@ -39,7 +40,7 @@ export async function POST(req: NextRequest) {
 
     if (!existingURI.endsWith("NOT_SET")) {
       return NextResponse.json(
-        { error: "Metadata already exists." },
+        { ok: false, message: "Metadata already exists" },
         { status: 400 }
       );
     }
@@ -47,30 +48,20 @@ export async function POST(req: NextRequest) {
     const nftNames = env.NEXT_PUBLIC_NFT_NAMES?.split(",") || [];
 
     // Generate the initial metadata
-    let metadata;
-    let previewImageUrl;
-    if (communityId) {
-      previewImageUrl = `${env.NEXT_PUBLIC_IRYS_GATEWAY}/${
-        COMMUNITIES.find((c) => c.value === communityId)?.manifest
-      }/${nftNames[0]}`;
-      metadata = {
-        name: `Community NFT #${tokenId}`,
-        symbol: "IBERA",
-        description: `There's a new Bera in town and her name is Irys`,
-        image: previewImageUrl,
-        currentLevel: "1",
-        communityId: communityId,
-      };
-    } else {
-      previewImageUrl = `${env.NEXT_PUBLIC_IRYS_GATEWAY}/${env.NEXT_PUBLIC_BASE_NFT_MANIFEST_ID}/${nftNames[0]}`;
-      metadata = {
-        name: `NFT #${tokenId}`,
-        symbol: "IBERA",
-        description: `There's a new Bera in town and her name is Irys`,
-        image: previewImageUrl,
-        currentLevel: "1",
-      };
-    }
+    const baseManifestId = communityId
+      ? COMMUNITIES.find((c) => c.value === communityId)?.manifest
+      : env.NEXT_PUBLIC_BASE_NFT_MANIFEST_ID;
+
+    const previewImageUrl = `${env.NEXT_PUBLIC_IRYS_GATEWAY}/${baseManifestId}/${nftNames[0]}`;
+
+    const metadata = {
+      name: communityId ? `Community NFT #${tokenId}` : `NFT #${tokenId}`,
+      symbol: "IBERA",
+      description: `There's a new Bera in town and her name is Irys`,
+      image: previewImageUrl,
+      currentLevel: "1",
+      ...(communityId && { communityId }), // Include communityId only if it exists
+    };
 
     // Upload the metadata to Irys
     const tags = [{ name: "Content-Type", value: "application/json" }];
