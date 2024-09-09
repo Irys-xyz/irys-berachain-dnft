@@ -72,11 +72,13 @@ const updateMetadata = async ({ walletAddress }: { walletAddress: string }) => {
  * @param {number} decimals - The number of decimals for the token, typically 18 for most ERC-20 tokens.
  * @returns {number} - The value in standard units.
  */
-const atomicToStandardUnits = (atomicValue: bigint, decimals: number = 18): number => {
+const atomicToStandardUnits = (
+  atomicValue: bigint,
+  decimals: number = 18
+): number => {
   const factor = BigInt(10 ** decimals);
   return Number(atomicValue) / Number(factor);
 };
-
 
 /**
  * Fetches the stats for a given address.
@@ -126,7 +128,8 @@ const fetchStats = async (address: string) => {
     args: [address],
   })) as bigint;
 
-  const currentBGTBalanceStandardUnits = atomicToStandardUnits(currentBGTBalance);
+  const currentBGTBalanceStandardUnits =
+    atomicToStandardUnits(currentBGTBalance);
 
   const tokens = (await publicClient.readContract({
     address: env.NEXT_PUBLIC_IRYS_THE_BERA_NFT as `0x${string}`,
@@ -139,7 +142,6 @@ const fetchStats = async (address: string) => {
     Number(token)
   );
 
-  
   return {
     baseBGTBalance: baseBGTBalanceNumber,
     currentBGTBalance: currentBGTBalanceStandardUnits,
@@ -170,6 +172,14 @@ const handleMint = async ({
       chain: berachainTestnetbArtio,
       transport: custom(window.ethereum),
     });
+
+    console.log(
+      walletClient.chain.id !== berachainTestnetbArtio.id,
+      walletClient.chain.id,
+      berachainTestnetbArtio.id
+    );
+
+    await walletClient.switchChain(berachainTestnetbArtio);
 
     const [account] = await walletClient.getAddresses();
 
