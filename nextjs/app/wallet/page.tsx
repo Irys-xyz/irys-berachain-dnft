@@ -164,7 +164,7 @@ const Wallet = () => {
         <div className="bg-[#451D07] p-3 size-14 grid place-items-center rounded-full">
           <BeeIcon className="" />
         </div>
-        <p className="text-center text-[#949494]">Your BTG Balance</p>
+        <p className="text-center text-[#949494]">Your BGT Balance</p>
         <h1 className="text-5xl font-bold tracking-tight">
           {stats?.currentBGTBalance}
         </h1>
@@ -174,7 +174,7 @@ const Wallet = () => {
           <div className="bg-[#451D07] p-1 size-6 grid place-items-center rounded-full">
             <BeeIcon className="" />
           </div>
-          <p className="text-center text-[#949494]">Your BTG Balance</p>
+          <p className="text-center text-[#949494]">Your BGT Balance</p>
         </div>
         <h1 className="text-3xl font-bold tracking-tight">
           {stats?.currentBGTBalance.toFixed(12)}
