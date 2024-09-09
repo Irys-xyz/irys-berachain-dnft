@@ -9,7 +9,7 @@ import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import TopNav from "./top-nav";
 
 const config = getDefaultConfig({
-  appName: "Irys Testnet Example",
+  appName: "Irys + Berchain dNFT",
   projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_ID!,
   chains: [berachainTestnetbArtio],
   ssr: true,

@@ -67,6 +67,18 @@ const updateMetadata = async ({ walletAddress }: { walletAddress: string }) => {
 };
 
 /**
+ * Converts a value from atomic units to standard units.
+ * @param {bigint} atomicValue - The value in atomic units (e.g., wei).
+ * @param {number} decimals - The number of decimals for the token, typically 18 for most ERC-20 tokens.
+ * @returns {number} - The value in standard units.
+ */
+const atomicToStandardUnits = (atomicValue: bigint, decimals: number = 18): number => {
+  const factor = BigInt(10 ** decimals);
+  return Number(atomicValue) / Number(factor);
+};
+
+
+/**
  * Fetches the stats for a given address.
  * @param {string} address - The address to fetch stats for.
  * @returns {Promise<UploadStats>} - The stats for the given address.
@@ -81,7 +93,8 @@ const fetchStats = async (address: string) => {
     args: [address],
   })) as bigint;
 
-  const baseBGTBalanceNumber = Number(baseBGTBalance);
+  // const baseBGTBalanceNumber = Number(baseBGTBalance);
+  const baseBGTBalanceNumber = atomicToStandardUnits(baseBGTBalance);
 
   // Calculate thresholds for level 2 and level 3
   const level2Percent = Number(env.NEXT_PUBLIC_PERCENT_TO_LEVEL_2);
@@ -113,6 +126,8 @@ const fetchStats = async (address: string) => {
     args: [address],
   })) as bigint;
 
+  const currentBGTBalanceStandardUnits = atomicToStandardUnits(currentBGTBalance);
+
   const tokens = (await publicClient.readContract({
     address: env.NEXT_PUBLIC_IRYS_THE_BERA_NFT as `0x${string}`,
     abi: IrysTheBeraNFTAbi,
@@ -124,9 +139,10 @@ const fetchStats = async (address: string) => {
     Number(token)
   );
 
+  
   return {
     baseBGTBalance: baseBGTBalanceNumber,
-    currentBGTBalance: Number(currentBGTBalance),
+    currentBGTBalance: currentBGTBalanceStandardUnits,
     level2Threshold,
     level3Threshold,
     tokenIds: tokensWithNoDuplicates,
