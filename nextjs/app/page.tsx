@@ -52,7 +52,7 @@ const Home = () => {
         <p className="text-center max-w-3xl mx-auto my-24 text-lg leading-loose">
           Built on Berachain and powered by Irys, this NFT evolves with
           you—thanks to Irys&apos;s dynamic Mutable References. This isn&apos;t
-          just an NFT drop—it&apos;s a living story of your bArtio growth. And
+          just an NFT drop—it&apos;s a living story of your $BGT growth. And
           with open-source code, you can{" "}
           <a
             href="https://github.com/Irys-xyz/irys-berachain-dnft"
