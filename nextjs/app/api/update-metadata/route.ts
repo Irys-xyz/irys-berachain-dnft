@@ -169,7 +169,7 @@ export async function POST(req: NextRequest) {
         console.log(`balance too low, not updating`);
         return NextResponse.json({
           ok: false,
-          message: "No updates until you earn more bgt, anon.",
+          message: "You need to earn more $BGT before you can update your NFT.",
         });
       }
 
