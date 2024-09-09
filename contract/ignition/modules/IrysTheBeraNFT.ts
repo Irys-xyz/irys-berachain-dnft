@@ -11,7 +11,7 @@ config();
 // ========================================================
 const IrysTheBeraNFTModule = buildModule("IrysTheBeraNFTModule", (m) => {
   // Deploy contract
-  const contract = m.contract("IrysTheBeraNFT", [`${process.env.CONTRACT_BASE_URL}`]);
+  const contract = m.contract("IrysTheBeraNFT", [`${process.env.BGT_CONTRACT_ADDRESS}`]);
 
   return { contract };
 });

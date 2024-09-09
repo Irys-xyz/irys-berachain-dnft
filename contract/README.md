@@ -62,7 +62,7 @@ pnpm deploy:berachain;
 ```bash
 # FROM: ./apps/contract
 
-pnpm verify:berachain 0x9d7Ef808f88b1E7829AbC8DD2187C41Eb6005B8a "https://gateway.irys.xyz/mutable/"
+pnpm verify:berachain 0xD06d8FD4632003D54d78EAfFe9D444B3c80Fb3E3 "0xbDa130737BDd9618301681329bF2e46A016ff9Ad"
 
 ```
 

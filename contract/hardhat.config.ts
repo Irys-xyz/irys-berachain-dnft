@@ -1,48 +1,92 @@
-// Imports
-// ========================================================
 import { HardhatUserConfig } from "hardhat/config";
-import "@nomicfoundation/hardhat-toolbox-viem";
-import "@nomicfoundation/hardhat-chai-matchers";
-import { berachainTestnetbArtio } from "viem/chains";
+import "@nomicfoundation/hardhat-toolbox";
+import "@nomicfoundation/hardhat-verify";
 import dotenv from "dotenv";
-
-// Config
-// ========================================================
 dotenv.config();
 
-// Hardhat Config
-// ========================================================
 const config: HardhatUserConfig = {
-  solidity: "0.8.24",
-  networks: {
-    hardhat: {
-      chainId: 1337,
-    },
-    berachainTestnetbArtio: {
-      chainId: parseInt(`${berachainTestnetbArtio.id}`),
-      url: `${berachainTestnetbArtio.rpcUrls.default.http[0] || ""}`,
-      accounts: process.env.WALLET_PRIVATE_KEY ? [`${process.env.WALLET_PRIVATE_KEY}`] : [],
+  solidity: {
+    version: "0.8.26", 
+    settings: {
+      optimizer: {
+        enabled: true,
+        runs: 200,
+      },
     },
   },
-  // For Contract Verification
+  //@ts-ignore
   etherscan: {
-    apiKey: `${process.env.BLOCK_EXPLORER_API_KEY}`,
+    apiKey: {
+      bartio_testnet: "bartio_testnet", // apiKey is not required, just set a placeholder
+    },
     customChains: [
       {
-        network: `${berachainTestnetbArtio.name || ""}`,
-        chainId: parseInt(`${berachainTestnetbArtio.id}`),
+        network: "bartio_testnet",
+        chainId: 80084,
         urls: {
-          apiURL: `${process.env.BLOCK_EXPLORER_API_URL}`,
-          browserURL: `${berachainTestnetbArtio.blockExplorers.default.url || ""}`,
-        },
-      },
-    ],
+          apiURL: "https://api.routescan.io/v2/network/testnet/evm/80084/etherscan",
+          browserURL: "https://bartio.beratrail.io"
+        }
+      }
+    ]
   },
-  sourcify: {
-    enabled: false
-  }
+  networks: {
+    berachainTestnetbArtio: {
+      url: 'https://bartio.rpc.berachain.com',
+      accounts: [process.env.WALLET_PRIVATE_KEY!]
+    },
+  },
 };
 
-// Export Default
-// ========================================================
 export default config;
+
+
+
+// // Imports
+// // ========================================================
+// import { HardhatUserConfig } from "hardhat/config";
+// import "@nomicfoundation/hardhat-toolbox-viem";
+// import "@nomicfoundation/hardhat-chai-matchers";
+// import { berachainTestnetbArtio } from "viem/chains";
+// import dotenv from "dotenv";
+
+// // Config
+// // ========================================================
+// dotenv.config();
+
+// // Hardhat Config
+// // ========================================================
+// const config: HardhatUserConfig = {
+//   solidity: "0.8.24",
+//   networks: {
+//     hardhat: {
+//       chainId: 1337,
+//     },
+//     berachainTestnetbArtio: {
+//       chainId: parseInt(`${berachainTestnetbArtio.id}`),
+//       url: `${berachainTestnetbArtio.rpcUrls.default.http[0] || ""}`,
+//       accounts: process.env.WALLET_PRIVATE_KEY ? [`${process.env.WALLET_PRIVATE_KEY}`] : [],
+//     },
+//   },
+//   // For Contract Verification
+//   etherscan: {
+//     apiKey: `${process.env.BLOCK_EXPLORER_API_KEY}`,
+//     customChains: [
+//       {
+//         network: `${berachainTestnetbArtio.name || ""}`,
+//         chainId: parseInt(`${berachainTestnetbArtio.id}`),
+//         urls: {
+//           apiURL: `${process.env.BLOCK_EXPLORER_API_URL}`,
+//           browserURL: `${berachainTestnetbArtio.blockExplorers.default.url || ""}`,
+//         },
+//       },
+//     ],
+//   },
+//   sourcify: {
+//     enabled: false
+//   }
+// };
+
+// // Export Default
+// // ========================================================
+// export default config;
