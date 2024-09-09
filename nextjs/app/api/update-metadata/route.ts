@@ -159,20 +159,19 @@ export async function POST(req: NextRequest) {
         LEVEL_PERCENT_MAP[currentLevel] ?? BigInt(0);
 
       // Calculate the required BGT balance using bigint arithmetic
-      // const requiredBGTBalance =
-      //   baseBGTAmount === 0n
-      //     ? percentIncreaseRequired
-      //     : baseBGTAmount + (baseBGTAmount * percentIncreaseRequired) / 100n;
-      // console.log(`requiredBGTBalance=${requiredBGTBalance}`);
+      const requiredBGTBalance =
+        baseBGTAmount === 0n
+          ? percentIncreaseRequired
+          : baseBGTAmount + (baseBGTAmount * percentIncreaseRequired) / 100n;
+      console.log(`requiredBGTBalance=${requiredBGTBalance}`);
 
-      // // WILLIAM when testing you can comment this out to just let the update happen.
-      // if (BigInt(currentBGTBalance) < requiredBGTBalance) {
-      //   console.log(`balance too low, not updating`);
-      //   return NextResponse.json({
-      //     ok: false,
-      //     message: "No updates until you earn more bgt, anon.",
-      //   });
-      // }
+      if (BigInt(currentBGTBalance) < requiredBGTBalance) {
+        console.log(`balance too low, not updating`);
+        return NextResponse.json({
+          ok: false,
+          message: "No updates until you earn more bgt, anon.",
+        });
+      }
 
       // Generate new metadata
       const nftNames = env.NEXT_PUBLIC_NFT_NAMES?.split(",") || [];
