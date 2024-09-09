@@ -43,7 +43,7 @@ const ERROR_UPDATE_METADATA_24H =
   "You've already updated your NFT today! Check back tomorrow.";
 
 const METADATA_UPDATED =
-  "Metadata updated successfully! Your NFT is evolving—just give it a few seconds to reflect the changes.";
+  "Your NFT is evolving—just give it a few seconds to reflect the changes.";
 
 const LEVEL_PERCENT_MAP: Record<number, bigint> = {
   0: BigInt(0),
