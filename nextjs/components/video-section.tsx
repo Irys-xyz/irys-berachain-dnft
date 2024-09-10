@@ -25,7 +25,7 @@ const VideoSection: FC = (): JSX.Element => {
       )}
       <div className="overflow-hidden rounded-xl">
         <ReactPlayer
-          url="/nft-collab.mp4"
+          url="https://devnet.irys.xyz/tx/76GLpUzW1SM7hybDbPkwf3ZUMp2tXzizTa4HjrnFwZzq/data"
           className="rounded-xl"
           controls
           playing

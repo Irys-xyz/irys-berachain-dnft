@@ -110,7 +110,7 @@ const NftLevelMobile = ({
             </>
           )}
           <div className="overflow-hidden rounded-xl">
-            <Image
+            <img
               src={`/levels/${folderPath}/level-${viewing}.png`}
               width={BASE_NFT_WIDTH}
               height={BASE_NFT_WIDTH * BASE_RATIO}
