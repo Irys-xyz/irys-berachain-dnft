@@ -72,6 +72,16 @@ const Wallet = () => {
     },
   });
 
+  const handleShare = () => {
+    const url = nftData.image;
+    const text = "Check out my new Bera x Irys NFT!";
+    const shareUrl = `https://x.com/intent/tweet?text=${encodeURIComponent(
+      text
+    )}&url=${encodeURIComponent(url)}`;
+
+    window.open(shareUrl, "_blank", "noopener,noreferrer");
+  };
+
   if (
     !isConnected ||
     !address ||
@@ -229,7 +239,7 @@ const Wallet = () => {
         </section>
       )}
       <div className="flex items-center justify-center mt-20">
-        <div className="mx-auto">
+        <div className="mx-auto flex gap-6">
           <Button
             className="w-[200px]"
             disabled={updateMetadataMutation.isPending}
@@ -241,6 +251,12 @@ const Wallet = () => {
               "Update Metadata"
             )}
           </Button>
+
+          {updateMetadataMutation.isSuccess && (
+            <Button className="w-[340px]" onClick={handleShare}>
+              Share your new Bera x Irys NFT on X
+            </Button>
+          )}
         </div>
       </div>
       <div className="my-20 mx-auto flex items-center justify-center flex-col max-w-4xl pt-10 border-t border-[#1C1C1C]">
