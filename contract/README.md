@@ -1,6 +1,6 @@
 # Berachain Irys BHoneyNFT Contract 
 
-## Description
+![](../assets/banner-4.jpg)
 
 The **IrysTheBeraNFT** contract is an ERC721 NFT contract that allows users to mint up to two NFTs per wallet: one main NFT and one community NFT. 
 

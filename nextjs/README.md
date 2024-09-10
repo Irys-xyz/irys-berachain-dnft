@@ -1,5 +1,7 @@
 # Next.js Front-End for IrysTheBeraNFT
 
+![](../assets/banner-4.jpg)
+
 This repository provides the front-end for interacting with the **IrysTheBeraNFT** smart contract. It includes functions for minting NFTs and updating their metadata. 
 
 > The full UI is provided, but this README focuses specifically on the aspects related to creating and mutating the NFTs.
