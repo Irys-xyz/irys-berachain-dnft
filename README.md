@@ -1,5 +1,7 @@
 # Overview
 
+![](./assets/banner-1.jpg)
+
 The [Irys](https://irys.xyz/) [Berachain](https://www.berachain.com/) Dynamic NFT project uses [Irys's mutability feature](https://docs.irys.xyz/build/d/features/mutability) to create NFTs that evolve. As users accumulate BGT tokens, the metadata associated with their NFTs updates.
 
 This repository is fully opensource. Users are encouraged to fork it, adapt the code, and deploy their own dynamic NFT projects.
