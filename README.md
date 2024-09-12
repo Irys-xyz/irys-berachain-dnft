@@ -12,3 +12,9 @@ This project is organized into two sub-repositories:
 
 - [Contract](./contract/README.md): The smart contract and hardhat project.
 - [NextJS](./nextjs/README.md): The front-end using Next.js for interacting with the NFT and smart contract.
+
+## See It In Action
+
+Go mint an NFT yourself:
+
+https://beramint.irys.xyz/

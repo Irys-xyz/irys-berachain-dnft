@@ -2,10 +2,10 @@
 pragma solidity ^0.8.26;
 
 // Imports
-import {ERC721} from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
-import {ERC721URIStorage} from "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
-import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
+import { ERC721 } from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import { IERC721 } from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+import { ERC721URIStorage } from "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
 
 /**
  * For BGT Contract to allow checking the current balance of an address

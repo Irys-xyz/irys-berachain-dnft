@@ -22,14 +22,15 @@ export async function POST(req: NextRequest) {
   const cookieStore = cookies();
   const { walletAddress } = await req.json();
 
-  // Validate the request body
+  // 1. Validate the request body
   try {
     updateMetadataSchema.parse({ walletAddress });
   } catch (error: any) {
     return NextResponse.json({ error: error.errors }, { status: 400 });
   }
 
-  // At least 24 hours before trying again
+  // 2. We've added a requirement that users can only update once every 24 hours
+  // It's checked here. 
   const updatedAt = cookieStore.get("ua");
   if (updatedAt && updatedAt.value) {
     try {
@@ -70,6 +71,7 @@ export async function POST(req: NextRequest) {
     }
   }
 
+  // 3. Get all tokens IDs owned by the user
   try {
     const userOwnedTokens = (await publicClient.readContract({
       address: env.NEXT_PUBLIC_IRYS_THE_BERA_NFT as `0x${string}`,
@@ -82,7 +84,7 @@ export async function POST(req: NextRequest) {
       Number(token)
     );
 
-    // Get the base BGT amount at the time of minting
+    // 4. Get the base BGT amount at the time of minting
     const baseBGTAmount = (await publicClient.readContract({
       address: env.NEXT_PUBLIC_IRYS_THE_BERA_NFT as `0x${string}`,
       abi: IrysTheBeraNFTAbi,
@@ -90,7 +92,7 @@ export async function POST(req: NextRequest) {
       args: [walletAddress],
     })) as bigint;
 
-    // Get the current BGT balance
+    // 5. Get the users's current BGT balance
     const currentBGTBalance = (await publicClient.readContract({
       address: env.NEXT_PUBLIC_BGT_CONTRACT_ADDRESS as `0x${string}`,
       abi: [
@@ -106,8 +108,9 @@ export async function POST(req: NextRequest) {
       args: [walletAddress],
     })) as bigint;
 
+    // 6. Iterate over the token IDs and update if it's time to update
     for (let tokenId of tokens) {
-      // Retrieve the current token URI
+      // 7. Retrieve the current token URI
       const currentURI = (await publicClient.readContract({
         address: env.NEXT_PUBLIC_IRYS_THE_BERA_NFT as `0x${string}`,
         abi: IrysTheBeraNFTAbi,
@@ -115,12 +118,13 @@ export async function POST(req: NextRequest) {
         args: [BigInt(tokenId)],
       })) as string;
 
-      // Fetch the current metadata from Irys
+      // 8. Fetch the current metadata from Irys
       const metadataResponse = await fetch(currentURI);
       const currentMetadata = await metadataResponse.json();
 
       const currentLevel = parseInt(currentMetadata.currentLevel, 10);
 
+      // 9. If they're at level 3, nothing else to do
       if (currentLevel >= 3) {
         const otherTokensLevels = await Promise.all(
           tokens
@@ -158,7 +162,7 @@ export async function POST(req: NextRequest) {
       let percentIncreaseRequired =
         LEVEL_PERCENT_MAP[currentLevel] ?? BigInt(0);
 
-      // Calculate the required BGT balance using bigint arithmetic
+      // 10. Calculate the required BGT balance using bigint arithmetic
       const requiredBGTBalance =
         baseBGTAmount === 0n
           ? percentIncreaseRequired
@@ -173,7 +177,7 @@ export async function POST(req: NextRequest) {
         });
       }
 
-      // Generate new metadata
+      // 11. Generate new metadata
       const nftNames = env.NEXT_PUBLIC_NFT_NAMES?.split(",") || [];
       const nextLevel = currentLevel + 1;
 
@@ -193,12 +197,16 @@ export async function POST(req: NextRequest) {
         currentLevel: nextLevel.toString(),
       };
 
+      // 12. Finally upload the new metadata, tagging it with the ID of the original
+      // If you're forking the repo to create something new, this is the one
+      // piece of the route you need to keep. The custom update logic above can be replaced.
       await uploadMetadata({
         newMetadata,
         rootTx: currentURI.split("/").pop() as string,
       });
     }
 
+    // 13. Update the cookie used to track our 24 hour rule
     const encryptedDate = await aesGcmEncrypt(
       new Date().toISOString(),
       process.env.COOKIE_ENCRYPT_KEY as string
