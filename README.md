@@ -18,3 +18,9 @@ This project is organized into two sub-repositories:
 Go mint an NFT yourself:
 
 https://beramint.irys.xyz/
+
+## Video Overview
+
+If you prefer to learn by video, we have a video walk-through of the code here:
+
+https://x.com/spaceagente/status/1834216117621146081
